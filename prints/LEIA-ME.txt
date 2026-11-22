@@ -5,11 +5,11 @@ sem depender de serviços de screenshot (mShots/thum.io).
 
 COMO PUBLICAR (uma vez):
 
-1. Abra https://github.com/MlCodeSolutions/site
+1. Abra https://github.com/MLCodeSolutions/Site_ML_Code_Solutions
 2. Clique em "Add file" > "Upload files".
 3. Arraste a pasta "prints" inteira (ou os 68 arquivos .jpg) e confirme o commit na branch "main".
 4. Pronto. O site usa automaticamente:
-   https://raw.githubusercontent.com/MlCodeSolutions/site/main/prints/<arquivo>.jpg
+   https://raw.githubusercontent.com/MLCodeSolutions/Site_ML_Code_Solutions/main/prints/<arquivo>.jpg
 
 Sem esse upload, os cards mostram a capa artística SVG (nunca ficam em branco).
 Se o catálogo mudar, rode novamente tools/capture-prints.mjs para atualizar as capturas.
