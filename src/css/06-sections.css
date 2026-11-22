@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    ML CODE SOLUTIONS · 07B-09 · dor, servicos, processo
    Extraido de index.html (fase 1)
    ============================================================ */
@@ -13,12 +13,11 @@
   transition:border-color var(--d-base),transform var(--d-base),box-shadow var(--d-base);
 }
 .pain-card:hover{transform:translateY(-3px);border-color:color-mix(in oklab,var(--neon-1) 36%,transparent);box-shadow:0 26px 56px -44px #000,0 0 34px -24px var(--neon-1)}
-.pain-icon{
-  width:46px;height:46px;display:grid;place-items:center;margin-bottom:1rem;border-radius:13px;
-  color:var(--neon-3);border:1px solid color-mix(in oklab,var(--neon-1) 28%,transparent);
-  background:color-mix(in oklab,var(--neon-2) 12%,transparent);
-}
-.pain-icon svg{width:23px;height:23px}
+.pain-art{height:clamp(112px,9vw,136px);margin:-.35rem 0 .95rem;background-position:center;background-repeat:no-repeat;background-size:contain}
+.pain-card:nth-child(1) .pain-art{background-image:url("../../svg/problema/01.svg")}
+.pain-card:nth-child(2) .pain-art{background-image:url("../../svg/problema/02.svg")}
+.pain-card:nth-child(3) .pain-art{background-image:url("../../svg/problema/03.svg")}
+.pain-card:nth-child(4) .pain-art{background-image:url("../../svg/problema/04.svg")}
 .pain-card h3{font-family:var(--font-display);font-size:.98rem;letter-spacing:-.01em;margin-bottom:.4rem}
 .pain-card p{color:var(--muted);font-size:.82rem;line-height:1.6}
 .cta-strip{

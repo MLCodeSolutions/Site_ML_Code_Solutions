@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true" viewBox="0 0 96 96"><style>.ring { stroke-dasharray: 26 10; animation: spin 14s linear infinite; transform-origin: 48px 48px; }
+    .glass { animation: bob 4.6s ease-in-out infinite; }
+    .spark { animation: twinkle 3.2s ease-in-out infinite; transform-origin: 70px 26px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    @keyframes twinkle { 0%, 100% { opacity: .35; transform: scale(.85); } 50% { opacity: 1; transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { .ring, .glass, .spark { animation: none; } }</style><circle cx="48" cy="48" r="34" stroke="#c084fc" stroke-opacity=".38" stroke-width="1.4" class="ring"/><g class="glass"><circle cx="44" cy="42" r="17" stroke="#e9ddfb" stroke-opacity=".8" stroke-width="2.4"/><path stroke="#e9ddfb" stroke-linecap="round" stroke-opacity=".8" stroke-width="3.4" d="M56.5 54.5 68 66"/><path stroke="#c084fc" stroke-linecap="round" stroke-opacity=".55" stroke-width="1.6" d="M37 42h14m-7-7v14"/></g><path fill="#e879f9" fill-opacity=".85" d="m70 19.5 1.5 4.4 4.4 1.5-4.4 1.5-1.5 4.4-1.5-4.4-4.4-1.5 4.4-1.5z" class="spark"/><circle cx="24" cy="66" r="2.2" fill="#8b5cf6" fill-opacity=".7"/><circle cx="76" cy="72" r="1.6" fill="#c084fc" fill-opacity=".6"/></svg>

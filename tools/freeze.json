@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-22T17:59:29.342Z",
+  "generatedAt": "2026-11-22T19:21:00.850Z",
   "ids": [
     "structuredData",
     "mlcStroke",
@@ -26,7 +26,6 @@
     "i-external",
     "i-spark",
     "i-chevron",
-    "brand-logo",
     "topo",
     "nav",
     "navToggle",
@@ -35,8 +34,6 @@
     "stars",
     "hero-title",
     "heroParallax",
-    "hg-edge",
-    "hg-screenGlow",
     "dv-a",
     "problema",
     "problema-title",
@@ -101,18 +98,18 @@
     "modalCta"
   ],
   "sections": {
-    "inicio": "1b80ec2c29e51a60",
+    "inicio": "a615c4a7c410b465",
     "problema": "8f5bad912d8b5732",
     "servicos": "9b93f9ebc5ca920a",
     "processo": "1bb1f117d48bc3de",
     "nichos": "05a7a156510eac21",
-    "modelos": "125f9d7cd65b39a1",
+    "modelos": "bdc0d52c1081ad64",
     "planos": "2466c02e01b99e26",
     "sobre": "d21328c0d99c1fd8",
     "faq": "5e5ea09288c109bd",
     "contato": "22ccf16604c69abc",
     "legal": "3d2e4fe7e4471d2c"
   },
-  "textHash": "13706442a9dc3df6",
-  "chars": 13574
+  "textHash": "970d8ef59447effb",
+  "chars": 13531
 }

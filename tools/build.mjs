@@ -36,11 +36,14 @@ await esbuild({
   entryPoints: [path.join(srcDir, "css", "main.css")],
   bundle: true,
   outfile: path.join(distDir, "main.css"),
+  external: ["../../assets/*", "../../svg/*", "../../fonts/*"],
   logLevel: "silent",
 });
 
 const cssIn = fs.readFileSync(path.join(distDir, "main.css"));
-const { code: cssMin } = cssTransform({ filename: "main.css", code: cssIn, minify: true });
+const transformed = cssTransform({ filename: "main.css", code: cssIn, minify: true });
+// src/css usa ../../ (raiz do projeto); dist/main.min.css fica um nivel acima.
+const cssMin = transformed.code.toString().replace(/url\((["']?)\.\.\/\.\.\//g, "url($1../");
 fs.writeFileSync(path.join(distDir, "main.min.css"), cssMin);
 fs.unlinkSync(path.join(distDir, "main.css"));
 

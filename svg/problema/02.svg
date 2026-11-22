@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f5edff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 240 160"><style>.p2_sweep { animation: p2_sweep 7.5s ease-in-out infinite; }
+    .p2_glow { animation: p2_glow 4.8s ease-in-out infinite; }
+    .p2_spark { transform-box: fill-box; transform-origin: center; animation: p2_twinkle 4.2s ease-in-out infinite; }
+    @keyframes p2_sweep { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-7px); } }
+    @keyframes p2_glow { 0%, 100% { opacity: .12; } 50% { opacity: .32; } }
+    @keyframes p2_twinkle { 0%, 100% { transform: scale(.82); opacity: .45; } 50% { transform: scale(1); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .p2_sweep, .p2_glow, .p2_spark { animation: none; } }</style><rect width="126" height="66" x="42" y="44" stroke="#b9a8d4" stroke-dasharray="5 6" stroke-opacity=".5" rx="10"/><path stroke="#b9a8d4" stroke-opacity=".42" d="M56 58h48"/><path stroke="#b9a8d4" stroke-opacity=".2" d="M56 72h52M56 82h40M56 92h46"/><circle cx="150" cy="72" r="35" stroke="#8b5cf6" class="p2_glow"/><g class="p2_sweep"><circle cx="150" cy="72" r="27"/><rect width="28" height="24" x="136" y="60" stroke="#c084fc" stroke-dasharray="3 4" stroke-opacity=".7" rx="5"/><path stroke="#c084fc" stroke-opacity=".5" d="M142 72h16"/><path stroke="#c084fc" d="m169 91 20 20"/></g><path fill="#e879f9" stroke="none" d="m190 42 1.7 4.8 4.8 1.7-4.8 1.7L190 55l-1.7-4.8-4.8-1.7 4.8-1.7z" class="p2_spark"/></svg>

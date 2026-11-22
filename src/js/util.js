@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    ML CODE SOLUTIONS · helpers compartilhados
    Extraido de index.html (fase 1)
    ============================================================ */
@@ -53,6 +53,13 @@ export function printFileName(site) {
     return "";
   }
 }
+export function assetBase() {
+  const base = document.documentElement.dataset.base;
+  return base ? base.replace(/\/?$/, "/") : "../";
+}
+export function assetUrl(pathname) {
+  return assetBase() + String(pathname).replace(/^\/+/, "");
+}
 export function printBases() {
   const bases = [];
   // Build de produção injeta data-base com a tag imutável do jsDelivr (assets/img/prints/).
@@ -76,6 +83,7 @@ export function attachShot(container, site, options = {}) {
   let picture = null;
   let img = null;
   const fail = () => {
+    container.classList.remove("shot-pending");
     if (picture) picture.remove();
     if (options.onError) options.onError();
   };
@@ -102,6 +110,7 @@ export function attachShot(container, site, options = {}) {
     img.addEventListener("load", () => {
       if (!img.naturalWidth) { baseIndex += 1; mount(); return; }
       img.classList.add("is-loaded");
+      container.classList.remove("shot-pending");
       if (options.onLoad) options.onLoad(img);
     });
     img.addEventListener("error", () => {
@@ -109,6 +118,7 @@ export function attachShot(container, site, options = {}) {
       mount();
     });
     picture.append(webp, img);
+    container.classList.add("shot-pending");
     container.append(picture);
   };
   mount();

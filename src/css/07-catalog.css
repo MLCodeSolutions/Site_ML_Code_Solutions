@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    ML CODE SOLUTIONS · 11 · catalogo
    Extraido de index.html (fase 1)
    ============================================================ */
@@ -146,10 +146,10 @@
 }
 .model-card:hover{--lift:-5px; border-color:color-mix(in oklab, var(--accent,var(--neon-1)) 45%, transparent); box-shadow:0 38px 80px -50px #000, 0 0 54px -26px var(--accent,var(--neon-1))}
 .model-card:hover::after{opacity:1}
-.model-cover{position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--bg-1); border-bottom:1px solid var(--line-soft)}
+.model-cover{position:relative; aspect-ratio:4/3; overflow:hidden; background:radial-gradient(circle at 70% 20%, color-mix(in oklab, var(--accent,var(--neon-1)) 18%, transparent), transparent 62%), var(--bg-1); border-bottom:1px solid var(--line-soft)}
 .model-cover picture{display:contents}
-.model-cover > svg{width:100%; height:100%; display:block; transition:transform .6s var(--ease-out)}
-.model-card:hover .model-cover > svg{transform:scale(1.035)}
+.model-cover .model-cover-art{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s var(--ease-out)}
+.model-card:hover .model-cover .model-cover-art{transform:scale(1.035)}
 .model-cover .model-shot{
   position:absolute; inset:0; z-index:1; width:100%; height:100%; object-fit:cover;
   opacity:0; transition:opacity .45s var(--ease-out), transform .6s var(--ease-out);
@@ -201,14 +201,20 @@
   padding:3.4rem 1.2rem; border:1px dashed var(--line); border-radius:var(--radius);
   background:color-mix(in oklab, var(--bg-1) 60%, transparent);
 }
-.catalog-empty svg{width:44px; height:44px; color:var(--neon-3); margin-bottom:.8rem; opacity:.8}
+.catalog-empty svg,.catalog-empty img{width:44px; height:44px; color:var(--neon-3); margin-bottom:.8rem; opacity:.8}
 .catalog-empty h3{font-family:var(--font-display); font-size:1.12rem; margin-bottom:.35rem}
 .catalog-empty p{color:var(--muted); font-size:.84rem; margin-bottom:1rem}
 .catalog-empty .btn{--btn-h:40px; font-size:.76rem}
-/* capas: classes internas geradas pelo JS */
-.cover-frame{filter:drop-shadow(0 18px 24px rgba(0,0,0,.45))}
-.cover-shine{transition:transform .7s var(--ease-out); transform:translateX(-120%)}
-.model-card:hover .cover-shine{transform:translateX(160%)}
+.demo-seal{display:flex; align-items:center; gap:.55rem; margin:-.2rem 0 .9rem; color:var(--muted); font-size:.78rem; line-height:1.5}
+.demo-seal-icon{flex:0 0 auto; width:26px; height:26px; background:url("../../svg/selo-demonstracoes.svg") center/contain no-repeat; filter:drop-shadow(0 0 10px color-mix(in oklab, var(--neon-1) 45%, transparent))}
+.model-cover.shot-pending::before{
+  content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background-image:url("../../svg/image-loading.svg");
+  background-size:200% 100%; background-repeat:repeat-x;
+  animation:shotSlide 1.5s linear infinite; opacity:.55;
+}
+@keyframes shotSlide{from{background-position:0 0}to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.model-cover.shot-pending::before{animation:none}}
 @media (max-width:1020px){
   .catalog-grid{min-height:540px}
   .catalog-page{grid-template-columns:repeat(2,minmax(0,1fr)); min-height:540px}

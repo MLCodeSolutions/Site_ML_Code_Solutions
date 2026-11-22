@@ -1,28 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900">
-  <defs>
-    <radialGradient id="aurora1" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.42"/>
-      <stop offset="55%" stop-color="#6d28d9" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#07030f" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="aurora2" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0%" stop-color="#e879f9" stop-opacity="0.32"/>
-      <stop offset="60%" stop-color="#a855f7" stop-opacity="0.1"/>
-      <stop offset="100%" stop-color="#07030f" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="aurora3" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.28"/>
-      <stop offset="60%" stop-color="#6d28d9" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="#07030f" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="orbit" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#e879f9" stop-opacity="0.55"/>
-      <stop offset="50%" stop-color="#a855f7" stop-opacity="0.3"/>
-      <stop offset="100%" stop-color="#6d28d9" stop-opacity="0.15"/>
-    </linearGradient>
-  </defs>
-  <style>
-  @keyframes orbit-a{0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)}}
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900"><defs><radialGradient id="aurora1" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="#a855f7" stop-opacity=".42"/><stop offset="55%" stop-color="#6d28d9" stop-opacity=".16"/><stop offset="100%" stop-color="#07030f" stop-opacity="0"/></radialGradient><radialGradient id="aurora2" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="#e879f9" stop-opacity=".32"/><stop offset="60%" stop-color="#a855f7" stop-opacity=".1"/><stop offset="100%" stop-color="#07030f" stop-opacity="0"/></radialGradient><radialGradient id="aurora3" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="#4f46e5" stop-opacity=".28"/><stop offset="60%" stop-color="#6d28d9" stop-opacity=".08"/><stop offset="100%" stop-color="#07030f" stop-opacity="0"/></radialGradient><linearGradient id="orbit" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#e879f9" stop-opacity=".55"/><stop offset="50%" stop-color="#a855f7" stop-opacity=".3"/><stop offset="100%" stop-color="#6d28d9" stop-opacity=".15"/></linearGradient></defs><style>@keyframes orbit-a{0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)}}
   .orbit-a{animation-name:orbit-a;animation-duration:42s;animation-timing-function:linear;animation-iteration-count:infinite}
   @keyframes orbit-b{0%{transform:rotate(360deg)} 100%{transform:rotate(0deg)}}
   .orbit-b{animation-name:orbit-b;animation-duration:58s;animation-timing-function:linear;animation-iteration-count:infinite}
@@ -30,31 +6,4 @@
   .orbit-c{animation-name:orbit-c;animation-duration:72s;animation-timing-function:linear;animation-iteration-count:infinite}
   @keyframes star{0%{opacity:0.25} 50%{opacity:0.9} 100%{opacity:0.25}}
   .star{animation-name:star;animation-duration:7s;animation-timing-function:ease-in-out;animation-iteration-count:infinite}
-  @media (prefers-reduced-motion: reduce){.orbit-a,.orbit-b,.orbit-c,.star{animation:none!important}}
-  </style>
-  <!-- transparent background -->
-  <circle cx="720" cy="450" r="560" fill="url(#aurora1)"/>
-  <circle cx="250" cy="170" r="430" fill="url(#aurora2)"/>
-  <circle cx="1190" cy="730" r="420" fill="url(#aurora3)"/>
-  <g class="orbit-a" style="transform-box:view-box;transform-origin:720px 450px">
-    <ellipse cx="720" cy="450" rx="510" ry="250" fill="none" stroke="url(#orbit)" stroke-width="1.5" stroke-dasharray="2 12" opacity="0.8"/>
-    <circle cx="1218" cy="330" r="4" fill="#e879f9" opacity="0.85"/>
-  </g>
-  <g class="orbit-b" style="transform-box:view-box;transform-origin:720px 450px">
-    <ellipse cx="720" cy="450" rx="400" ry="320" fill="none" stroke="url(#orbit)" stroke-width="1" stroke-dasharray="1 16" opacity="0.55"/>
-    <circle cx="320" cy="700" r="3.5" fill="#c084fc" opacity="0.7"/>
-  </g>
-  <g class="orbit-c" style="transform-box:view-box;transform-origin:720px 450px">
-    <ellipse cx="720" cy="450" rx="620" ry="180" fill="none" stroke="#8b2eff" stroke-width="1" stroke-dasharray="4 18" opacity="0.35"/>
-  </g>
-  <g>
-    <circle cx="180" cy="620" r="2.5" class="star" fill="#f5edff"/>
-    <circle cx="280" cy="260" r="3" class="star" fill="#e879f9"/>
-    <circle cx="470" cy="760" r="2" class="star" fill="#c084fc"/>
-    <circle cx="980" cy="160" r="2.8" class="star" fill="#f5edff"/>
-    <circle cx="1160" cy="420" r="2.2" class="star" fill="#e879f9"/>
-    <circle cx="1320" cy="250" r="2.6" class="star" fill="#c084fc"/>
-    <circle cx="840" cy="810" r="2.2" class="star" fill="#f5edff"/>
-    <circle cx="620" cy="120" r="2" class="star" fill="#e879f9"/>
-  </g>
-</svg>
+  @media (prefers-reduced-motion: reduce){.orbit-a,.orbit-b,.orbit-c,.star{animation:none!important}}</style><circle cx="720" cy="450" r="560" fill="url(#aurora1)"/><circle cx="250" cy="170" r="430" fill="url(#aurora2)"/><circle cx="1190" cy="730" r="420" fill="url(#aurora3)"/><g class="orbit-a" style="transform-box:view-box;transform-origin:720px 450px"><ellipse cx="720" cy="450" fill="none" stroke="url(#orbit)" stroke-dasharray="2 12" stroke-width="1.5" opacity=".8" rx="510" ry="250"/><circle cx="1218" cy="330" r="4" fill="#e879f9" opacity=".85"/></g><g class="orbit-b" style="transform-box:view-box;transform-origin:720px 450px"><ellipse cx="720" cy="450" fill="none" stroke="url(#orbit)" stroke-dasharray="1 16" opacity=".55" rx="400" ry="320"/><circle cx="320" cy="700" r="3.5" fill="#c084fc" opacity=".7"/></g><ellipse cx="720" cy="450" fill="none" stroke="#8b2eff" stroke-dasharray="4 18" class="orbit-c" opacity=".35" rx="620" ry="180" style="transform-box:view-box;transform-origin:720px 450px"/><circle cx="180" cy="620" r="2.5" fill="#f5edff" class="star"/><circle cx="280" cy="260" r="3" fill="#e879f9" class="star"/><circle cx="470" cy="760" r="2" fill="#c084fc" class="star"/><circle cx="980" cy="160" r="2.8" fill="#f5edff" class="star"/><circle cx="1160" cy="420" r="2.2" fill="#e879f9" class="star"/><circle cx="1320" cy="250" r="2.6" fill="#c084fc" class="star"/><circle cx="840" cy="810" r="2.2" fill="#f5edff" class="star"/><circle cx="620" cy="120" r="2" fill="#e879f9" class="star"/></svg>

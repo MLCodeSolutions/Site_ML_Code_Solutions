@@ -1,4 +1,4 @@
-import fs from "node:fs";
+﻿import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { transformSync } from "esbuild";
@@ -93,6 +93,25 @@ const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
 const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
 if (dupes.length) problems.push("IDs duplicados: " + [...new Set(dupes)].join(", "));
 
+// 9) SVGs externos (covers + apoio)
+const coverSlugs = [...dataJs.matchAll(/slug:\s*"([^"]+)"/g)].map((m) => m[1]);
+for (const slug of coverSlugs) {
+  const rel = path.join("svg", "covers", slug + ".svg");
+  if (!exists(rel)) { problems.push("Cover faltando: " + rel); continue; }
+  const svg = read(rel);
+  if (!svg.startsWith("<svg")) problems.push(`Cover ${rel} sem raiz <svg>`);
+  if (!/viewBox="0 0 400 300"/.test(svg)) problems.push(`Cover ${rel} sem viewBox 400x300`);
+  if (!svg.includes("prefers-reduced-motion")) problems.push(`Cover ${rel} sem prefers-reduced-motion`);
+  if (Buffer.byteLength(svg) > 6144) problems.push(`Cover ${rel} acima de 6 KB`);
+  if (/<image\b|href="https?:/.test(svg)) problems.push(`Cover ${rel} com dependencia externa`);
+}
+for (const rel of ["svg/catalog-empty.svg", "svg/selo-demonstracoes.svg", "svg/image-loading.svg"]) {
+  if (!exists(rel)) problems.push("SVG faltando: " + rel);
+}
+for (const rel of ["svg/catalog-empty.svg", "svg/selo-demonstracoes.svg"]) {
+  if (exists(rel) && !read(rel).includes("prefers-reduced-motion")) problems.push(`SVG ${rel} sem prefers-reduced-motion`);
+}
+notes.push(`covers SVG: ${coverSlugs.length} (<= 6 KB cada)`);
 // 9) Build (quando existir): embed sem title/JSON-LD/style inline
 if (exists("dist/embed.html")) {
   const embed = read("dist/embed.html");

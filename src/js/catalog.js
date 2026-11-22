@@ -1,87 +1,12 @@
-/* ============================================================
+﻿/* ============================================================
    ML CODE SOLUTIONS · catalogo (engine) e modal de previa
    Extraido de index.html (fase 1)
    ============================================================ */
 import { CONFIG } from "./config.js";
 import { SITES, nicheMeta } from "./data.js";
-import { $, $$, attachShot, domainOf, icon, lite, make, normalizeText, reduced, safeUrl, waLink } from "./util.js";
+import { $, $$, assetUrl, attachShot, domainOf, icon, lite, make, normalizeText, reduced, safeUrl, waLink } from "./util.js";
 import { bindTilt, observeReveals, trackEvent } from "./ui.js";
 // ===== 11 · CAPAS DO CATÁLOGO (SVG) =====
-export function coverGlyph(nicho) {
-  if (nicho === "Cabeleireiro") {
-    return '<g transform="translate(280 140)" fill="none" stroke="#f5edff" stroke-opacity=".92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="-23" cy="-27" r="13"/><circle cx="23" cy="-27" r="13"/><path d="M-13 -16 21 37M13 -16-21 37" stroke-width="4"/><path d="M-52 34c13-15 22 9 36-5s19 8 31-8" stroke-opacity=".38" stroke-width="2.4"/><path d="M-3 46h6" stroke-opacity=".35"/></g>';
-  }
-  if (nicho === "Manicure") {
-    return '<g transform="translate(280 138)" stroke="#f5edff" stroke-opacity=".9" stroke-width="2" fill="none" stroke-linejoin="round"><rect x="-24" y="-8" width="48" height="58" rx="14" fill="#f5edff" fill-opacity=".07"/><rect x="-14" y="-30" width="28" height="24" rx="6" fill="#f5edff" fill-opacity=".14"/><path d="M-24 20c13 7 35 7 48 0"/><path d="M-36 -34v10M-41 -29h10" stroke-opacity=".55" stroke-linecap="round"/><path d="M31 -18c-5-5-5-10 0-14 5 4 5 9 0 14Z" fill="#e879f9" stroke="none"/></g>';
-  }
-  if (nicho === "Veterinária") {
-    return '<g transform="translate(280 143)" fill="none" stroke="#f5edff" stroke-opacity=".9" stroke-width="2" stroke-linecap="round"><ellipse cx="-31" cy="-25" rx="9" ry="12"/><ellipse cx="-11" cy="-34" rx="9" ry="12"/><ellipse cx="11" cy="-34" rx="9" ry="12"/><ellipse cx="31" cy="-25" rx="9" ry="12"/><path d="M0 -6c19 0 31 13 31 26 0 12-14 22-31 22S-31 32-31 20C-31 7-19-6 0-6Z" fill="#f5edff" fill-opacity=".08"/><path d="M0 13c-6-7-16-2-13 6 2 5 13 11 13 11s11-6 13-11c3-8-7-13-13-6Z" fill="#e879f9" fill-opacity=".8" stroke="none"/></g>';
-  }
-  if (nicho === "Banho e tosa") {
-    return '<g transform="translate(280 145)" fill="none" stroke="#f5edff" stroke-opacity=".9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M-52 6h104v20c0 18-14 32-32 32h-40c-18 0-32-14-32-32Z" fill="#f5edff" fill-opacity=".07"/><path d="M-52 6h104M-20 6V-18a12 12 0 0 1 21-8"/><path d="M-26 58v9M26 58v9"/><circle cx="18" cy="-29" r="6"/><circle cx="33" cy="-15" r="3.5"/><path d="M-34 -28c-9-9-9-18 0-26 9 8 9 17 0 26Z" fill="#38bdf8" stroke="none"/></g>';
-  }
-  if (nicho === "Prestadores de serviços gerais") {
-    return '<g transform="translate(250 82) scale(6.6)" fill="none" stroke="#f5edff" stroke-opacity=".9" stroke-width=".3" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z"/></g>';
-  }
-  if (nicho === "Joalheria e acessórios") {
-    return '<g transform="translate(250 92) scale(6.8)" fill="none" stroke="#f5edff" stroke-opacity=".9" stroke-width=".3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9l4-6Z" fill="#f5edff" fill-opacity=".06"/><path d="M2 9h20M9 3 6 9l6 12M15 3l3 6-6 12"/></g>';
-  }
-  return '<g transform="translate(280 140)" fill="none" stroke="#f5edff" stroke-opacity=".9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M-43 2h86v46h-86z" fill="#f5edff" fill-opacity=".07"/><path d="M-43 2c12 10 24 10 36 0s24-10 36 0 10 10 10 10"/><path d="M-43 18c12 10 24 10 36 0s24-10 36 0" stroke-opacity=".35"/><rect x="-4" y="-44" width="8" height="46" rx="4" fill="#f5edff" fill-opacity=".14"/><path d="M0 -57c-8-8-8-16 0-22 8 6 8 14 0 22Z" fill="#e879f9" stroke="none"/><circle cx="-26" cy="29" r="3" fill="#e879f9" stroke="none"/><circle cx="20" cy="33" r="2.4" fill="#c084fc" stroke="none"/></g>';
-}
-export function coverSVG(nicho, index) {
-  const meta = nicheMeta(nicho);
-  const palette = meta.palette || [meta.accent, meta.accent2];
-  const accent = palette[index % palette.length];
-  const accent2 = palette[(index + 2) % palette.length];
-  const flip = index % 2 === 0;
-  const gx1 = flip ? "0" : "1";
-  const gx2 = flip ? "1" : "0";
-  const glowX = 230 + (index % 3) * 45;
-  const glowY = 70 + (index % 2) * 50;
-  return '<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
-    '<defs>' +
-    '<linearGradient id="cov' + index + '" x1="' + gx1 + '" y1="0" x2="' + gx2 + '" y2="1"><stop stop-color="' + accent2 + '"/><stop offset="1" stop-color="' + accent + '"/></linearGradient>' +
-    '<radialGradient id="covr' + index + '"><stop stop-color="' + accent + '" stop-opacity=".55"/><stop offset="1" stop-color="' + accent + '" stop-opacity="0"/></radialGradient>' +
-    '<linearGradient id="covs' + index + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
-    '</defs>' +
-    '<rect width="400" height="300" fill="#090311"/>' +
-    '<circle cx="' + glowX + '" cy="' + glowY + '" r="150" fill="url(#covr' + index + ')"/>' +
-    '<path d="M-20 250 160 -20h90L70 300Z" fill="' + accent + '" opacity=".07"/>' +
-    '<g stroke="#f5edff" stroke-opacity=".035">' +
-      '<path d="M0 60h400M0 120h400M0 180h400M0 240h400"/>' +
-      '<path d="M60 0v300M140 0v300M220 0v300M300 0v300"/>' +
-    '</g>' +
-    '<g class="cover-frame">' +
-      '<rect x="28" y="30" width="344" height="240" rx="13" fill="#0d0518" stroke="' + accent + '" stroke-opacity=".35"/>' +
-      '<path d="M28 64h344" stroke="' + accent + '" stroke-opacity=".22"/>' +
-      '<circle cx="44" cy="47" r="3.5" fill="#e879f9" opacity=".85"/><circle cx="55" cy="47" r="3.5" fill="' + accent + '" opacity=".8"/><circle cx="66" cy="47" r="3.5" fill="#6d28d9" opacity=".9"/>' +
-      '<rect x="82" y="40" width="142" height="14" rx="7" fill="#f5edff" fill-opacity=".055" stroke="' + accent + '" stroke-opacity=".16"/>' +
-      '<circle cx="91" cy="47" r="2" fill="' + accent + '"/><rect x="98" y="45" width="76" height="4" rx="2" fill="#b9a8d4" fill-opacity=".24"/>' +
-      '<g>' +
-        '<rect x="48" y="84" width="56" height="12" rx="6" fill="' + accent + '" fill-opacity=".16" stroke="' + accent + '" stroke-opacity=".35"/>' +
-        '<circle cx="56" cy="90" r="2" fill="#e879f9"/><rect x="63" y="88" width="30" height="4" rx="2" fill="#f5edff" fill-opacity=".45"/>' +
-        '<rect x="48" y="110" width="124" height="10" rx="5" fill="#f5edff" fill-opacity=".75"/>' +
-        '<rect x="48" y="126" width="94" height="10" rx="5" fill="' + accent + '" fill-opacity=".7"/>' +
-        '<rect x="48" y="149" width="138" height="5" rx="2.5" fill="#b9a8d4" fill-opacity=".25"/>' +
-        '<rect x="48" y="160" width="110" height="5" rx="2.5" fill="#b9a8d4" fill-opacity=".16"/>' +
-        '<rect x="48" y="181" width="74" height="22" rx="11" fill="url(#cov' + index + ')"/>' +
-        '<rect x="60" y="189" width="46" height="6" rx="3" fill="#fff" fill-opacity=".72"/>' +
-      '</g>' +
-      '<rect x="208" y="82" width="142" height="121" rx="11" fill="' + accent + '" fill-opacity=".075" stroke="' + accent + '" stroke-opacity=".3"/>' +
-      '<circle cx="214" cy="146" r="4" fill="#f5edff" fill-opacity=".2"/><path d="M208 203c18-24 31-4 48-22s31-8 50-20 32 1 44 11v31H208Z" fill="' + accent + '" fill-opacity=".18"/>' +
-      coverGlyph(nicho) +
-      '<rect x="48" y="216" width="94" height="34" rx="7" fill="#f5edff" fill-opacity=".04" stroke="#f5edff" stroke-opacity=".07"/>' +
-      '<rect x="58" y="226" width="38" height="4" rx="2" fill="' + accent + '" fill-opacity=".8"/><rect x="58" y="236" width="58" height="4" rx="2" fill="#b9a8d4" fill-opacity=".2"/>' +
-      '<rect x="152" y="216" width="94" height="34" rx="7" fill="#f5edff" fill-opacity=".04" stroke="#f5edff" stroke-opacity=".07"/>' +
-      '<rect x="162" y="226" width="44" height="4" rx="2" fill="#f5edff" fill-opacity=".55"/><rect x="162" y="236" width="64" height="4" rx="2" fill="#b9a8d4" fill-opacity=".2"/>' +
-      '<rect x="256" y="216" width="94" height="34" rx="7" fill="#f5edff" fill-opacity=".04" stroke="#f5edff" stroke-opacity=".07"/>' +
-      '<circle cx="270" cy="233" r="6" fill="' + accent + '" fill-opacity=".5"/><rect x="282" y="229" width="48" height="4" rx="2" fill="#f5edff" fill-opacity=".4"/><rect x="282" y="238" width="34" height="3" rx="1.5" fill="#b9a8d4" fill-opacity=".2"/>' +
-    '</g>' +
-    '<g class="cover-shine"><g transform="skewX(-16)"><rect x="-120" y="24" width="80" height="256" fill="url(#covs' + index + ')"/></g></g>' +
-    '<circle cx="356" cy="22" r="3" fill="' + accent + '" opacity=".8"/><circle cx="24" cy="282" r="2.4" fill="#e879f9" opacity=".7"/>' +
-    '</svg>';
-}
-
 // ===== 12 · CATÁLOGO (ENGINE) =====
 export const catalogState = { nicho: "Todos", query: "" };
 export const catalogView = { page: 0, pages: 1, perPage: 6, windowStart: 0, windowSize: 3, recentering: false };
@@ -93,6 +18,18 @@ export const catalogProgress = $("#catalogProgress");
 export const catalogPageLabel = $("#catalogPageLabel");
 export const catalogCustom = $("#catalogCustom");
 export let catalogProgressMode = "";
+export function coverArt(slug, eager) {
+  const img = document.createElement("img");
+  img.className = "model-cover-art";
+  img.src = assetUrl("svg/covers/" + slug + ".svg");
+  img.alt = "";
+  img.width = 400;
+  img.height = 300;
+  img.decoding = "async";
+  if (eager) img.fetchPriority = "high";
+  else img.loading = "lazy";
+  return img;
+}
 
 export function nicheList() {
   const seen = [];
@@ -161,7 +98,7 @@ export function buildModelCell(site, index, order, eager) {
   card.style.setProperty("--accent", palette[index % palette.length]);
   card.style.setProperty("--accent2", palette[(index + 2) % palette.length]);
   const cover = make("div", "model-cover");
-  cover.innerHTML = coverSVG(site.nicho, index);
+  cover.append(coverArt(meta.slug, eager));
   attachShot(cover, site, { alt: "Prévia do site " + site.titulo, eager: Boolean(eager) });
   const preview = make("button", "model-preview");
   preview.type = "button";
@@ -213,12 +150,17 @@ export function buildCustomCard() {
 }
 export function buildEmpty() {
   const empty = make("div", "catalog-empty");
-  const glyph = make("div");
-  glyph.append(icon("i-search"));
+  const art = document.createElement("img");
+  art.src = assetUrl("svg/catalog-empty.svg");
+  art.alt = "";
+  art.width = 44;
+  art.height = 44;
+  art.loading = "lazy";
+  art.decoding = "async";
   const clear = make("button", "btn btn-ghost", "Limpar filtros");
   clear.type = "button";
   clear.addEventListener("click", clearFilters);
-  empty.append(glyph, make("h3", "", "Em breve, novos modelos neste nicho."), make("p", "", "Enquanto isso, peça um modelo sob medida ou tente outra busca."), clear);
+  empty.append(art, make("h3", "", "Em breve, novos modelos neste nicho."), make("p", "", "Enquanto isso, peça um modelo sob medida ou tente outra busca."), clear);
   return empty;
 }
 export function clearFilters() {
@@ -506,11 +448,6 @@ export function initCatalogControls() {
         renderCatalogWindow(catalogView.page);
       }, 160);
     });
-    catalogGrid.addEventListener("click", (event) => {
-      const trigger = event.target.closest("[data-preview]");
-      if (!trigger) return;
-      openPreview(Number(trigger.getAttribute("data-preview")), trigger);
-    });
   }
   const reflow = () => {
     if (catalogPerPage() === catalogView.perPage) return;
@@ -579,7 +516,7 @@ export function openPreview(index, trigger) {
   if (art) {
     art.classList.remove("has-shot");
     art.style.removeProperty("--shot");
-    art.innerHTML = coverSVG(site.nicho, index).replace(/id="cov/g, 'id="mcv').replace(/url\(#cov/g, 'url(#mcv');
+    art.replaceChildren(coverArt(nicheMeta(site.nicho).slug, true));
     const fallbackCopy = "Abra a demonstração em uma nova aba para navegar no site real.";
     const copy = fallback ? $(".modal-fallback-copy p", fallback) : null;
     if (copy) copy.textContent = fallbackCopy;
@@ -631,6 +568,13 @@ export function closePreview() {
 export function initModal() {
   const modal = $("#previewModal");
   if (!modal) return;
+  // Delegacao no documento: vale para o catalogo e para os destaques.
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    const trigger = target && target.closest ? target.closest("[data-preview]") : null;
+    if (!trigger) return;
+    openPreview(Number(trigger.getAttribute("data-preview")), trigger);
+  });
   $$("[data-modal-close]", modal).forEach((el) => el.addEventListener("click", closePreview));
   const closeBtn = $("#modalClose");
   if (closeBtn) closeBtn.addEventListener("click", closePreview);
