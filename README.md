@@ -316,12 +316,13 @@ O passo a passo completo, com checklist de 11 etapas, tabela de alturas e ordem 
 
 ## 11. Segurança manual do repositório
 
-Não há pipeline de segurança automatizado; estas práticas são **manuais e obrigatórias**:
+O CI roda build/check/freeze/SRI em push e pull request (`.github/workflows/ci.yml`); o restante é
+**manual e obrigatório**:
 
 - **2FA** na conta GitHub (e no e-mail associado).
 - **Branch protection** em `main`: PR obrigatório, sem force-push, sem delete, revisão antes do merge.
 - **Secret scanning** e **push protection** habilitados no repositório.
-- **Dependabot alerts** e atualizações de segurança habilitados para `npm`.
+- **Dependabot** configurado em `.github/dependabot.yml` (npm semanal; GitHub Actions mensal).
 - **Token nunca no repositório.** Use credenciais do sistema/SSH ou um token de curta duração no
   ambiente local. Se um token vazar, **revogue imediatamente** antes de qualquer push.
 - Tags de release assinadas (recomendado) e histórico de tags preservado.

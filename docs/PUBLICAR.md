@@ -12,7 +12,8 @@ com tag imutável.
 **Pré-requisitos**
 
 - Node.js >= 20 e `npm ci` executado.
-- Acesso de escrita ao repositório `MLCodeSolutions/Site_ML_Code_Solutions` (tag + push).
+- Acesso de escrita ao repositório `MLCodeSolutions/Site_ML_Code_Solutions` (tag + push). Uma conta
+  autenticada **sem permissão de escrita** recebe `403` no push, mesmo com credencial válida.
 - Permissão de edição no Google Sites onde a página será publicada.
 - Nenhum token/segredo no repositório. Se um token foi exposto, revogue antes do push.
 
@@ -88,6 +89,21 @@ https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.0/assets
   `assets/fonts/`); confirme que a tag publicada contém esses caminhos.
 - Se algum arquivo der 404, aguarde e tente novamente; não publique com tag quebrada.
 - Nunca valide/publique usando `@main` ou `raw.githubusercontent.com`.
+
+### 5.1 Spike de CSP/SRI dentro do Google Sites
+
+Cole **um** embed de teste (ex.: `dist/embed-hero.html`) e, no preview publicado, confira:
+
+- **Elements**: o iframe contém `<meta http-equiv="Content-Security-Policy">`? Se o Sites tiver
+  removido a meta, a CSP não vale no embed.
+- **Console**: sem `Refused to load/execute/apply...`. Violações indicam CSP ativa bloqueando algo.
+- **Network**: `main.min.css`/`main.min.js` retornam 200 pelo jsDelivr; se o SRI falhar, o console
+  mostra erro de integridade e o JS não roda.
+- **Altura**: o iframe mostra a seção inteira sem scroll interno (compare com `dist/heights.json`).
+
+Se a meta CSP for removida pelo Sites, registre no `docs/QA-RELATORIO.md` e siga com as mitigações
+restantes (SRI, zero inline, URLs fixas, `safeUrl`). Não tente compensar com headers: o domínio é do
+Google.
 
 ### 6. Configurar o Google Sites
 

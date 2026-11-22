@@ -88,7 +88,8 @@ tratar o reporte conforme a gravidade. Não há SLA contratual nem recompensa fi
 - **Sem segredos no repositório.** Tokens/credenciais nunca são commitados; o build não precisa de
   token para gerar `dist/` (o repositório é público). Push exige credencial do mantenedor.
 - **Repositório:** 2FA, branch protection em `main`, secret scanning/push protection e Dependabot
-  habilitados manualmente. Ver a seção “Segurança manual” do `README.md`.
+  habilitados manualmente. CI em `.github/workflows/ci.yml` (build/check/freeze/SRI) e Dependabot
+  em `.github/dependabot.yml`. Ver a seção “Segurança manual” do `README.md`.
 
 ## Limitações conhecidas (Google Sites)
 

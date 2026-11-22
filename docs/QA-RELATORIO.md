@@ -62,14 +62,23 @@ Copie o valor correspondente para o campo “altura” do bloco de código incor
 1. **Spike no Google Sites**: confirmar se a `meta` CSP e o SRI sobrevivem ao bloco “Código
    incorporado” e se os 8 iframes respeitam as alturas. Sem isso, não há como validar
    CSP/SRI/PageSpeed reais.
-2. **Token**: o token antigo foi exposto; é preciso revogá-lo e usar um novo para `git push` e tag
-   `v1.0.0` (jsDelivr só serve a tag depois do push).
+2. **Token/permissão**: o token antigo foi exposto; é preciso revogá-lo. Além disso, o `git push
+   --dry-run` retornou **403** para a conta `MateusLautenschlager` (autenticada, mas sem permissão de
+   escrita no repositório). É preciso conceder acesso de escrita a essa conta (ou usar uma conta/token
+   com `repo`/`contents:write`) antes de `push` + tag `v1.0.0` (jsDelivr só serve a tag após o push).
 3. **PageSpeed/Lighthouse** na URL publicada (mobile/desktop) — depende de 1 e 2.
 4. **axe/WAVE** externos não foram executados (não instalados); foco, contraste, alvos e
    reduced-motion foram verificados via Playwright. Dots de paginação ficam com 24 px (WCAG 2.5.8 AA,
    não 44 px) para não quebrar a barra com 23 páginas no mobile.
 5. **SEO nativo do Sites** (nome, título, descrição, favicon, URL, imagem) é configurado no Google
    Sites, não no embed — ver `docs/PUBLICAR.md`.
+
+## Release v1.0.0 pré-montada
+
+`npm run build:release` foi executado com a tag `v1.0.0` e os 9 HTML foram verificados: `data-base`
+absoluto em `...@v1.0.0/assets/`, CSS/JS com `integrity` igual a `dist/integrity.json`, CSP presente,
+zero `../assets`, zero raw/`@main`. Artefatos prontos para colar em
+`%TEMP%\kilo\release-v1.0.0\`. O `dist/` local foi restaurado (`npm run build`) e o `check` segue OK.
 
 ## Veredito
 
