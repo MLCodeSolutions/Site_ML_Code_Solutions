@@ -23,7 +23,7 @@ body{
     var(--bg-0);
   color:var(--ink);
   font-family:var(--font-body);
-  font-size:clamp(.95rem, 1.05vw, 1.05rem);
+  font-size:clamp(1rem, 1.05vw, 1.05rem);
   line-height:1.65;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
@@ -48,12 +48,12 @@ ul,ol{margin:0; padding:0; list-style:none}
 }
 .skip-link:focus{transform:none}
 .container{width:var(--container); margin-inline:auto}
-.section{position:relative; padding:clamp(4rem, 9vw, 8rem) 0; scroll-margin-top:90px}
-.section-head{max-width:760px; margin-bottom:clamp(2.2rem, 5vw, 4rem)}
+.section{position:relative; padding:clamp(4rem, 9vw, 8rem) 0; scroll-margin-top:96px}
+.section-head{max-width:760px; margin-bottom:clamp(2rem, 5vw, 4rem)}
 .eyebrow{
-  display:inline-flex; align-items:center; gap:.7rem;
+  display:inline-flex; align-items:center; gap:.75rem;
   margin-bottom:1rem;
-  font-size:.72rem; font-weight:700; letter-spacing:.24em; text-transform:uppercase;
+  font-size:.75rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
   color:var(--neon-3);
 }
 .eyebrow::before{
@@ -65,7 +65,7 @@ ul,ol{margin:0; padding:0; list-style:none}
   font-size:clamp(2rem, 4.6vw, 4.2rem); line-height:.98; letter-spacing:-.035em; text-wrap:balance;
 }
 .h2 em, .grad{font-style:normal; background:var(--grad); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:gradPan 8s linear infinite}
-.lead{color:var(--muted); max-width:60ch; margin-top:1.15rem; font-size:clamp(.98rem,1.3vw,1.12rem)}
+.lead{color:var(--muted); max-width:60ch; margin-top:1rem; font-size:clamp(1rem,1.3vw,1.12rem)}
 .marker{display:flex; align-items:center; gap:.65rem; color:var(--muted); font-size:.8rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase}
 .marker::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--magenta); box-shadow:0 0 12px var(--magenta)}
 .surface{
@@ -74,18 +74,13 @@ ul,ol{margin:0; padding:0; list-style:none}
   box-shadow:var(--shadow-card);
 }
 .svg-defs{position:absolute; width:0; height:0; overflow:hidden}
-.film-grain,.vignette{pointer-events:none}
-.film-grain{
-  position:fixed; inset:0; z-index:80; opacity:.052; mix-blend-mode:screen;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
-}
+.vignette{pointer-events:none}
 .vignette{
   position:fixed; inset:0; z-index:79;
   background:radial-gradient(ellipse at center, transparent 48%, rgba(3,1,8,.5) 100%);
 }
 
 @keyframes gradPan{0%{background-position:0 50%}100%{background-position:200% 50%}}
-@keyframes grainShift{0%{transform:translate3d(0,0,0)}33%{transform:translate3d(-2%,1%,0)}66%{transform:translate3d(1%,-2%,0)}100%{transform:translate3d(0,0,0)}}
 @keyframes spinAngle{to{--angle:360deg}}
 @keyframes floatY{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-14px,0)}}
 @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 color-mix(in oklab, var(--neon-1) 40%, transparent)}70%{box-shadow:0 0 0 18px transparent}}

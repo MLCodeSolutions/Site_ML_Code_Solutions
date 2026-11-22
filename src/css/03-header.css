@@ -19,12 +19,12 @@
   box-shadow:0 18px 40px -30px rgba(0,0,0,.9);
 }
 .header-inner{display:flex; align-items:center; justify-content:space-between; gap:clamp(1rem,3vw,2.6rem)}
-.brand{display:inline-flex; align-items:center; text-decoration:none; flex:0 0 auto}
+.brand{display:inline-flex; align-items:center; min-height:44px; text-decoration:none; flex:0 0 auto}
 .brand-svg{width:176px; height:auto; filter:drop-shadow(0 0 14px color-mix(in oklab, var(--neon-1) 22%, transparent)); transition:transform var(--d-base) var(--ease-spring), filter var(--d-base)}
 .brand:hover .brand-svg{transform:translateY(-1px) scale(1.015); filter:drop-shadow(0 0 22px color-mix(in oklab, var(--neon-1) 45%, transparent))}
 .main-nav{display:flex; align-items:center; gap:clamp(.7rem,2vw,1.7rem)}
 .nav-link{
-  position:relative; padding:.45rem 0; text-decoration:none; color:var(--muted);
+  position:relative; display:inline-flex; align-items:center; justify-content:center; min-height:44px; min-width:44px; padding:.45rem 0; text-decoration:none; color:var(--muted);
   font-size:.82rem; font-weight:600; letter-spacing:.02em;
   transition:color var(--d-base);
 }
@@ -35,7 +35,7 @@
 }
 .nav-link:hover,.nav-link[aria-current="true"]{color:var(--ink)}
 .nav-link:hover::after,.nav-link[aria-current="true"]::after{transform:scaleX(1)}
-.header-cta{--btn-h:40px; font-size:.78rem; padding:.55rem 1rem}
+.header-cta{--btn-h:44px; font-size:.78rem; padding:.55rem 1rem}
 .nav-toggle{
   display:none; width:46px; height:46px; border:1px solid var(--line-soft); border-radius:50%;
   background:color-mix(in oklab, var(--bg-2) 70%, transparent); position:relative;
@@ -63,7 +63,7 @@
     transition:opacity var(--d-base) var(--ease-out), transform var(--d-base) var(--ease-out), visibility var(--d-base);
   }
   .nav-open .main-nav{visibility:visible; opacity:1; transform:none; pointer-events:auto}
-  .nav-link{padding:.85rem .6rem; font-size:.95rem; border-bottom:1px solid var(--line-soft)}
+  .nav-link{padding:.85rem .6rem; min-height:44px; font-size:.95rem; border-bottom:1px solid var(--line-soft); justify-content:flex-start}
   .nav-link::after{display:none}
   .header-cta{margin-top:.6rem; width:100%; --btn-h:48px}
 }

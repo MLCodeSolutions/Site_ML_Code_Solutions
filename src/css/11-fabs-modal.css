@@ -18,8 +18,8 @@
 .wa-fab svg{width:27px; height:27px}
 .wa-fab::after{
   content:"Falar no WhatsApp"; position:absolute; right:calc(100% + .6rem); top:50%; transform:translateY(-50%) translateX(6px);
-  padding:.4rem .6rem; border-radius:8px; background:var(--bg-2); border:1px solid var(--line);
-  color:var(--ink); font-size:.68rem; white-space:nowrap; opacity:0; pointer-events:none;
+  padding:.5rem .75rem; border-radius:8px; background:var(--bg-2); border:1px solid var(--line);
+  color:var(--ink); font-size:.75rem; white-space:nowrap; opacity:0; pointer-events:none;
   transition:opacity var(--d-base), transform var(--d-base);
 }
 .wa-fab:hover::after{opacity:1; transform:translateY(-50%) translateX(0)}
@@ -40,31 +40,31 @@
 .to-top svg.arrow{width:15px; height:15px; position:relative; z-index:1}
 @media (max-width:420px){
   .wa-fab{width:52px; height:52px; right:.85rem; bottom:calc(.85rem + env(safe-area-inset-bottom))}
-  .to-top{width:42px; height:42px; right:.95rem; bottom:calc(4.7rem + env(safe-area-inset-bottom))}
+  .to-top{width:44px; height:44px; right:.95rem; bottom:calc(4.7rem + env(safe-area-inset-bottom))}
 }
 .mobile-cta{
   position:fixed; left:0; right:0; bottom:0; z-index:96;
   display:flex; align-items:center; gap:.55rem;
-  padding:.55rem .7rem calc(.55rem + env(safe-area-inset-bottom));
+  padding:.5rem 1rem calc(.5rem + env(safe-area-inset-bottom));
   background:rgba(7,3,15,.97); border-top:1px solid color-mix(in oklab, var(--neon-1) 30%, var(--line-soft));
   box-shadow:0 -18px 40px -30px #000;
 }
 .mobile-cta[hidden]{display:none}
 .mobile-cta-info{display:grid; gap:.05rem; min-width:0; flex:1 1 auto}
-.mobile-cta-info small{font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.mobile-cta-info small{font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
 .mobile-cta-info b{font-family:var(--font-display); font-size:1.05rem; line-height:1.1; color:var(--neon-3)}
-.mobile-cta-info span{font-size:.64rem; color:var(--muted)}
-.mobile-cta .btn{--btn-h:44px; padding:.55rem .8rem; font-size:.78rem; gap:.35rem; flex:0 1 auto}
-.mobile-cta-close{width:34px; height:34px; border-radius:50%; display:grid; place-items:center; flex:0 0 auto; background:transparent; border:1px solid var(--line); color:var(--muted)}
-.mobile-cta-close svg{width:14px; height:14px}
+.mobile-cta-info span{font-size:.75rem; color:var(--muted)}
+.mobile-cta .btn{--btn-h:44px; padding:.5rem .75rem; font-size:.78rem; gap:.35rem; flex:0 1 auto}
+.mobile-cta-close{width:44px; height:44px; border-radius:50%; display:grid; place-items:center; flex:0 0 auto; background:transparent; border:1px solid var(--line); color:var(--muted)}
+.mobile-cta-close svg{width:16px; height:16px}
 body.mobile-cta-open .wa-fab,
 body.mobile-cta-open .to-top{opacity:0; visibility:hidden; pointer-events:none}
 @media (min-width:761px){.mobile-cta{display:none!important}}
-@media (max-width:380px){.mobile-cta-info span{display:none}.mobile-cta .btn{font-size:.72rem; padding:.5rem .6rem}}
+@media (max-width:380px){.mobile-cta-info span{display:none}.mobile-cta .btn{font-size:.75rem; padding:.5rem .75rem}}
 .cookie-banner{
   position:fixed; left:1rem; right:1rem; bottom:calc(1rem + env(safe-area-inset-bottom)); z-index:110;
   display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
-  max-width:760px; margin:0 auto; padding:1rem 1.1rem; border-radius:var(--radius);
+  max-width:760px; margin:0 auto; padding:1rem; border-radius:var(--radius);
   background:rgba(8,3,16,.98); border:1px solid color-mix(in oklab,var(--neon-1) 32%,var(--line-soft));
   box-shadow:0 24px 60px -30px #000;
 }
@@ -72,7 +72,7 @@ body.mobile-cta-open .to-top{opacity:0; visibility:hidden; pointer-events:none}
 .cookie-banner p{color:var(--muted);font-size:.78rem;line-height:1.55;max-width:48ch}
 .cookie-actions{display:flex;gap:.5rem;flex:0 0 auto}
 .cookie-actions button{
-  padding:.5rem .8rem; border-radius:999px; font-size:.74rem; font-weight:700;
+  min-height:44px; padding:.5rem 1rem; border-radius:999px; font-size:.75rem; font-weight:700;
   border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
 }
 .cookie-actions button[data-consent="granted"]{background:var(--grad);border-color:transparent;color:#fff}
@@ -91,26 +91,26 @@ body.mobile-cta-open .to-top{opacity:0; visibility:hidden; pointer-events:none}
   box-shadow:0 50px 140px -40px #000, 0 0 90px -40px var(--neon-2);
   animation:modalIn .35s var(--ease-out);
 }
-.modal-head{display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.85rem 1rem; border-bottom:1px solid var(--line-soft); background:color-mix(in oklab, var(--bg-2) 72%, transparent)}
+.modal-head{display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem; border-bottom:1px solid var(--line-soft); background:color-mix(in oklab, var(--bg-2) 72%, transparent)}
 .modal-head h2{font-family:var(--font-display); font-size:1rem; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.modal-head p{font-size:.64rem; color:var(--muted); margin-top:.15rem}
-.modal-close{width:38px; height:38px; flex:0 0 auto; border-radius:50%; border:1px solid var(--line-soft); background:transparent; color:var(--ink); display:grid; place-items:center}
+.modal-head p{font-size:.75rem; color:var(--muted); margin-top:.25rem}
+.modal-close{width:44px; height:44px; flex:0 0 auto; border-radius:50%; border:1px solid var(--line-soft); background:transparent; color:var(--ink); display:grid; place-items:center}
 .modal-close:hover{border-color:var(--neon-1); background:color-mix(in oklab, var(--neon-1) 12%, transparent)}
-.modal-close svg{width:16px; height:16px}
+.modal-close svg{width:18px; height:18px}
 .modal-body{position:relative; flex:1 1 auto; min-height:min(62svh,560px); background:#05020a}
-.modal-fallback{position:absolute; inset:0; z-index:3; display:none; place-items:center; text-align:center; padding:2rem; background:linear-gradient(150deg,var(--bg-2),#05020a)}
+.modal-fallback{position:absolute; inset:0; z-index:3; display:none; place-items:stretch; flex-direction:column; text-align:left; padding:0; overflow:hidden; background:linear-gradient(150deg,var(--bg-2),#05020a)}
 .modal-fallback.is-visible{display:grid}
 .modal-fallback svg{width:48px; height:48px; color:var(--neon-3); margin:0 auto .9rem; opacity:.85}
 .modal-fallback h3{font-family:var(--font-display); font-size:1.1rem; margin-bottom:.4rem}
 .modal-fallback p{color:var(--muted); font-size:.82rem; max-width:42ch; margin:0 auto 1.1rem}
-.modal-foot{display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.7rem .95rem; border-top:1px solid var(--line-soft); background:color-mix(in oklab, var(--bg-2) 55%, transparent); font-size:.66rem; color:var(--muted)}
+.modal-foot{display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem; border-top:1px solid var(--line-soft); background:color-mix(in oklab, var(--bg-2) 55%, transparent); font-size:.75rem; color:var(--muted)}
 .modal-foot .domain{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.modal-foot .btn{--btn-h:36px; font-size:.7rem; padding:.4rem .8rem}
+.modal-foot .btn{--btn-h:44px; font-size:.75rem; padding:.5rem 1rem}
 body.modal-open{overflow:hidden}
 @keyframes modalIn{from{opacity:0; transform:translateY(14px) scale(.985)}to{opacity:1; transform:none}}
 @media (max-width:560px){
   .modal{padding:.4rem}
   .modal-panel{max-height:94svh}
   .modal-body{min-height:58svh}
-  .modal-foot{font-size:.6rem}
+  .modal-foot{font-size:.75rem}
 }

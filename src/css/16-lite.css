@@ -5,12 +5,10 @@
 /* ===== 24 · MODO LEVE (CELULAR / ECONOMIA DE DADOS) =====
    Mantém a identidade visual, mas remove repaint contínuo, blur animado
    e animações de fundo que pesam em aparelhos intermediários. */
-html.lite .film-grain,
 html.lite .vignette,
 html.lite .float-chip{display:none!important}
 html.lite .hero-fog,
 html.lite .hero-glow,
-html.lite .cta-orb,
 html.lite .morph-blob,
 html.lite .catalog-glow{animation:none!important; filter:none!important; opacity:.3!important}
 html.lite .grad,
@@ -18,15 +16,6 @@ html.lite .h2 em,
 html.lite .hero-title em,
 html.lite .btn-primary,
 html.lite .btn-ring::before,
-html.lite .art-float,
-html.lite .art-float--slow,
-html.lite .art-spark,
-html.lite .art-caret,
-html.lite .art-scan,
-html.lite .art-orbit,
-html.lite .art-ui,
-html.lite .art-chip,
-html.lite .float-chip,
 html.lite .scroll-cue i::after,
 html.lite .wa-fab,
 html.lite .cta-grid,

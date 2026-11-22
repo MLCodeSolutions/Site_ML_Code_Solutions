@@ -9,7 +9,7 @@ import { bindTilt, observeReveals, trackEvent } from "./ui.js";
 // ===== 11 · CAPAS DO CATÁLOGO (SVG) =====
 // ===== 12 · CATÁLOGO (ENGINE) =====
 export const catalogState = { nicho: "Todos", query: "" };
-export const catalogView = { page: 0, pages: 1, perPage: 6, windowStart: 0, windowSize: 3, recentering: false };
+export const catalogView = { page: 0, pages: 1, perPage: 6 };
 export const catalogGrid = $("#catalogGrid");
 export const catalogNav = $("#catalogNav");
 export const catalogPrev = $("#catalogPrev");
@@ -17,7 +17,12 @@ export const catalogNext = $("#catalogNext");
 export const catalogProgress = $("#catalogProgress");
 export const catalogPageLabel = $("#catalogPageLabel");
 export const catalogCustom = $("#catalogCustom");
-export let catalogProgressMode = "";
+let catalogResults = [];
+
+function isSectionMode() {
+  return Boolean(document.body && document.body.dataset.embedMode === "section");
+}
+
 export function coverArt(slug, eager) {
   const img = document.createElement("img");
   img.className = "model-cover-art";
@@ -51,6 +56,8 @@ export function selectNiche(nicho, scroll) {
     catalogState.nicho = nicho;
     updateTabState();
     renderCatalog(true);
+  } else if (catalogView.page > 0) {
+    renderCatalog(false);
   }
   if (scroll) {
     const section = $("#modelos");
@@ -90,6 +97,8 @@ export function buildAction(label, href, iconId, variant) {
 }
 export function buildModelCell(site, index, order, eager) {
   const meta = nicheMeta(site.nicho);
+  const safe = safeUrl(site.url);
+  const direct = isSectionMode() && Boolean(safe);
   const cell = make("div", "model-cell");
   cell.dataset.index = String(index);
   const card = make("article", "model-card tilt");
@@ -100,10 +109,18 @@ export function buildModelCell(site, index, order, eager) {
   const cover = make("div", "model-cover");
   cover.append(coverArt(meta.slug, eager));
   attachShot(cover, site, { alt: "Prévia do site " + site.titulo, eager: Boolean(eager) });
-  const preview = make("button", "model-preview");
-  preview.type = "button";
-  preview.dataset.preview = String(index);
-  preview.setAttribute("aria-label", "Pré-visualizar o modelo " + site.titulo);
+  // No modo seção não existe modal: a lupa abre a demonstração direto em nova aba.
+  const preview = direct ? make("a", "model-preview") : make("button", "model-preview");
+  if (direct) {
+    preview.href = safe;
+    preview.target = "_blank";
+    preview.rel = "noopener noreferrer";
+    preview.setAttribute("aria-label", "Abrir o modelo " + site.titulo + " em nova aba");
+  } else {
+    preview.type = "button";
+    preview.dataset.preview = String(index);
+    preview.setAttribute("aria-label", "Pré-visualizar o modelo " + site.titulo);
+  }
   preview.append(icon("i-eye"));
   const badge = make("span", "model-niche-badge");
   const badgeIcon = make("span", "badge-icon");
@@ -118,7 +135,6 @@ export function buildModelCell(site, index, order, eager) {
   body.append(topline, make("h3", "", site.titulo), make("p", "", site.descricao));
 
   const actions = make("div", "model-actions");
-  const safe = safeUrl(site.url);
   if (safe) {
     actions.append(buildAction("Ver modelo", safe, "i-external", "btn-primary"));
   } else {
@@ -173,127 +189,54 @@ export function clearFilters() {
   updateTabState();
   renderCatalog(true);
 }
+
+// 6 no desktop, 4 no tablet e 3 no mobile (mesmas colunas do CSS).
 export function catalogPerPage() {
-  if (window.matchMedia("(max-width: 640px)").matches) return 1;
-  if (window.matchMedia("(max-width: 1020px)").matches) return 2;
+  if (window.matchMedia("(min-width: 1024px)").matches) return 6;
+  if (window.matchMedia("(min-width: 700px)").matches) return 4;
   return 3;
 }
-export function chunkList(list, size) {
-  const pages = [];
-  for (let i = 0; i < list.length; i += size) pages.push(list.slice(i, i + size));
-  return pages.length ? pages : [[]];
-}
-export const catalogPrintState = { chunks: [] };
-export function buildPage(index, total) {
-  const page = make("div", "catalog-page");
-  page.dataset.page = String(index);
-  page.setAttribute("role", "group");
-  page.setAttribute("aria-roledescription", "slide");
-  page.setAttribute("aria-label", "Página " + (index + 1) + " de " + total);
-  page._entries = catalogPrintState.chunks[index] || [];
-  return page;
-}
-export function fillCatalogPage(page, eager) {
-  if (!page || page.dataset.filled === "1") return;
-  page.dataset.filled = "1";
-  const entries = page._entries || [];
-  if (!entries.length) { page.append(buildEmpty()); return; }
-  const frag = document.createDocumentFragment();
-  entries.forEach((entry) => frag.append(buildModelCell(entry.site, entry.index, entry.order, Boolean(eager))));
-  page.replaceChildren(frag);
-  bindTilt(page);
-}
-export function catalogPageElement(localIndex) {
-  if (!catalogGrid) return null;
-  return catalogGrid.children[localIndex] || null;
-}
-export function currentCatalogLocal() {
-  if (!catalogGrid) return 0;
-  let best = 0;
-  let distance = Infinity;
-  Array.prototype.forEach.call(catalogGrid.children, (page, index) => {
-    const delta = Math.abs(page.offsetLeft - catalogGrid.scrollLeft);
-    if (delta < distance) { distance = delta; best = index; }
-  });
-  return best;
-}
-export function currentCatalogGlobal() {
-  return catalogView.windowStart + currentCatalogLocal();
-}
-export function renderCatalogWindow(center, options = {}) {
+
+function renderCatalogPage() {
   if (!catalogGrid) return;
-  const total = catalogView.pages;
-  if (total < 1) return;
-  const target = Math.max(0, Math.min(total - 1, Number(center) || 0));
-  const size = Math.min(catalogView.windowSize, total);
-  const start = Math.max(0, Math.min(total - size, target - Math.floor(size / 2)));
-  const reuse = options.reuse !== false;
-  const existing = Array.prototype.slice.call(catalogGrid.children);
-  const reused = reuse
-    ? existing.find((page) => Number(page.dataset.page) === target && page.dataset.filled === "1")
-    : null;
-  const pages = [];
-  for (let index = start; index < start + size; index++) {
-    if (reused && index === target) { pages.push(reused); continue; }
-    pages.push(buildPage(index, total));
+  const perPage = catalogView.perPage;
+  const start = catalogView.page * perPage;
+  const pageItems = catalogResults.slice(start, start + perPage);
+  if (!pageItems.length) {
+    catalogGrid.replaceChildren(buildEmpty());
+  } else {
+    const cells = pageItems.map((entry, offset) => buildModelCell(entry.site, entry.index, start + offset, catalogView.page === 0 && offset < 3));
+    catalogGrid.replaceChildren(...cells);
+    bindTilt(catalogGrid);
   }
-  catalogView.windowStart = start;
-  catalogView.page = target;
-  catalogView.recentering = true;
-  catalogGrid.style.scrollSnapType = "none";
-  catalogGrid.style.scrollBehavior = "auto";
-  catalogGrid.replaceChildren(...pages);
-  const local = target - start;
-  pages.forEach((page, index) => fillCatalogPage(page, index >= local));
-  const targetPage = pages[local];
-  if (targetPage && Math.abs(catalogGrid.scrollLeft - targetPage.offsetLeft) > 1) {
-    catalogGrid.scrollTo({ left: targetPage.offsetLeft, behavior: "instant" });
-  }
-  syncCatalogNav();
-  requestAnimationFrame(() => {
-    catalogGrid.style.scrollSnapType = "";
-    catalogGrid.style.scrollBehavior = "";
-    window.setTimeout(() => { catalogView.recentering = false; }, 60);
-  });
+  catalogGrid.dataset.page = String(catalogView.page);
+  catalogGrid.classList.toggle("is-empty", !catalogResults.length);
+  catalogGrid.classList.toggle("is-single", catalogView.pages <= 1);
 }
 export function renderCatalogProgress() {
   if (!catalogProgress) return;
   catalogProgress.replaceChildren();
+  catalogProgress.setAttribute("role", "group");
+  catalogProgress.setAttribute("aria-label", "Paginação do catálogo");
   const pages = catalogView.pages;
-  if (pages <= 24) {
-    catalogProgressMode = "dots";
-    for (let i = 0; i < pages; i++) {
-      const dot = make("button", "catalog-dot");
-      dot.type = "button";
-      dot.setAttribute("aria-label", "Ir para a página " + (i + 1));
-      dot.addEventListener("click", () => scrollToCatalogPage(i, true));
-      catalogProgress.append(dot);
-    }
-  } else {
-    catalogProgressMode = "bar";
-    const bar = make("div", "catalog-progress-bar");
-    bar.setAttribute("role", "progressbar");
-    bar.setAttribute("aria-label", "Progresso do catálogo");
-    bar.setAttribute("aria-valuemin", "1");
-    bar.setAttribute("aria-valuemax", String(pages));
-    bar.append(make("span"));
-    catalogProgress.append(bar);
+  if (pages <= 1) return;
+  for (let i = 0; i < pages; i++) {
+    const dot = make("button", "catalog-dot");
+    dot.type = "button";
+    dot.dataset.page = String(i);
+    dot.setAttribute("aria-label", "Página " + (i + 1));
+    dot.setAttribute("aria-controls", "catalogGrid");
+    dot.addEventListener("click", () => setCatalogPage(i));
+    catalogProgress.append(dot);
   }
   syncCatalogProgressState();
 }
 export function syncCatalogProgressState() {
   if (!catalogProgress) return;
-  if (catalogProgressMode === "dots") {
-    Array.prototype.forEach.call(catalogProgress.children, (dot, index) => {
-      if (index === catalogView.page) dot.setAttribute("aria-current", "true");
-      else dot.removeAttribute("aria-current");
-    });
-  } else if (catalogProgressMode === "bar") {
-    const bar = catalogProgress.firstElementChild;
-    const fill = bar && bar.firstElementChild;
-    if (bar) bar.setAttribute("aria-valuenow", String(catalogView.page + 1));
-    if (fill) fill.style.width = (((catalogView.page + 1) / catalogView.pages) * 100).toFixed(2) + "%";
-  }
+  Array.prototype.forEach.call(catalogProgress.children, (dot, index) => {
+    if (index === catalogView.page) dot.setAttribute("aria-current", "page");
+    else dot.removeAttribute("aria-current");
+  });
 }
 export function syncCatalogNav() {
   const pages = catalogView.pages;
@@ -310,65 +253,47 @@ export function syncCatalogNav() {
 }
 export function setCatalogPage(index) {
   const max = Math.max(0, catalogView.pages - 1);
-  const next = Math.max(0, Math.min(max, index));
-  if (next === catalogView.page) return;
+  const next = Math.max(0, Math.min(max, Number(index) || 0));
+  const changed = next !== catalogView.page;
   catalogView.page = next;
+  if (changed) renderCatalogPage();
   syncCatalogNav();
-}
-export function scrollToCatalogPage(index, smooth) {
-  if (!catalogGrid) return;
-  const max = Math.max(0, catalogView.pages - 1);
-  const target = Math.max(0, Math.min(max, index));
-  const local = target - catalogView.windowStart;
-  const lastLocal = catalogGrid.children.length - 1;
-  const page = catalogPageElement(local);
-  const current = currentCatalogLocal();
-  const atEdge = local === 0 || local === lastLocal;
-  if (!page || local < 0 || local > lastLocal || atEdge || Math.abs(local - current) > 1) {
-    renderCatalogWindow(target, { reuse: true });
-    return;
-  }
-  setCatalogPage(target);
-  catalogGrid.scrollTo({ left: page.offsetLeft, behavior: smooth && !reduced() && !lite() ? "smooth" : "instant" });
+  return changed;
 }
 export function renderCatalog(animate, options = {}) {
   if (!catalogGrid) return;
-  const currentPage = catalogPageElement(currentCatalogLocal());
-  const anchorNode = options.preserve && currentPage ? currentPage.querySelector("[data-index]") : null;
+  const previousPage = catalogView.page;
+  const anchorNode = options.preserve ? catalogGrid.querySelector("[data-index]") : null;
   const anchor = anchorNode ? Number(anchorNode.getAttribute("data-index")) : null;
 
-  const results = [];
-  SITES.forEach((site, index) => { if (matchesCatalog(site)) results.push({ site, index }); });
+  catalogResults = [];
+  SITES.forEach((site, index) => { if (matchesCatalog(site)) catalogResults.push({ site, index }); });
   const perPage = catalogPerPage();
-  const chunks = [];
-  for (let i = 0; i < results.length; i += perPage) {
-    chunks.push(results.slice(i, i + perPage).map((entry, offset) => ({ site: entry.site, index: entry.index, order: i + offset })));
-  }
-  if (!chunks.length) chunks.push([]);
-  catalogPrintState.chunks = chunks;
-  const totalPages = chunks.length;
+  const totalPages = Math.max(1, Math.ceil(catalogResults.length / perPage));
 
   const count = $("#catalogCount");
   if (count) {
-    if (catalogState.query) count.textContent = results.length + (results.length === 1 ? " modelo encontrado para “" + catalogState.query + "”" : " modelos encontrados para “" + catalogState.query + "”");
-    else if (catalogState.nicho === "Todos") count.textContent = results.length + " modelos prontos para escolher";
-    else count.textContent = results.length + (results.length === 1 ? " modelo em " + catalogState.nicho : " modelos em " + catalogState.nicho);
+    if (catalogState.query) count.textContent = catalogResults.length + (catalogResults.length === 1 ? " modelo encontrado para “" + catalogState.query + "”" : " modelos encontrados para “" + catalogState.query + "”");
+    else if (catalogState.nicho === "Todos") count.textContent = catalogResults.length + " modelos prontos para escolher";
+    else count.textContent = catalogResults.length + (catalogResults.length === 1 ? " modelo em " + catalogState.nicho : " modelos em " + catalogState.nicho);
   }
+
+  // Filtro/busca voltam à primeira página; resize preserva o modelo âncora (aproximado).
   let target = 0;
-  if (anchor !== null) {
-    const found = results.findIndex((entry) => entry.index === anchor);
-    if (found >= 0) target = Math.floor(found / perPage);
+  if (options.preserve) {
+    const found = anchor === null ? -1 : catalogResults.findIndex((entry) => entry.index === anchor);
+    target = found >= 0 ? Math.floor(found / perPage) : previousPage;
   }
+  target = Math.max(0, Math.min(totalPages - 1, target));
+
   catalogView.perPage = perPage;
   catalogView.pages = totalPages;
-  catalogGrid.classList.toggle("is-empty", !results.length);
-  catalogGrid.classList.toggle("is-single", totalPages <= 1);
-  if (catalogCustom) catalogCustom.replaceChildren(buildCustomCard());
-  if (animate) trackEvent("catalog_filter", { nicho: catalogState.nicho, query: catalogState.query, resultados: results.length });
   catalogView.page = target;
+  if (catalogCustom) catalogCustom.replaceChildren(buildCustomCard());
+  if (animate) trackEvent("catalog_filter", { nicho: catalogState.nicho, query: catalogState.query, resultados: catalogResults.length });
   renderCatalogProgress();
   syncCatalogNav();
-  renderCatalogWindow(target, { reuse: false });
+  renderCatalogPage();
   observeReveals();
   if (animate && !reduced() && !lite()) {
     catalogGrid.animate(
@@ -407,56 +332,16 @@ export function initCatalogControls() {
       if (input) input.focus();
     });
   }
-  if (catalogPrev) catalogPrev.addEventListener("click", () => scrollToCatalogPage(catalogView.page - 1, true));
-  if (catalogNext) catalogNext.addEventListener("click", () => scrollToCatalogPage(catalogView.page + 1, true));
-  if (catalogGrid) {
-    let scrollTimer = 0;
-    let recenterTimer = 0;
-    const settleCatalogScroll = () => {
-      if (catalogView.recentering) return;
-      const local = currentCatalogLocal();
-      const global = catalogView.windowStart + local;
-      setCatalogPage(global);
-      const canPrev = global > 0;
-      const canNext = global < catalogView.pages - 1;
-      const atEdge = (local === 0 && canPrev) || (local === catalogGrid.children.length - 1 && canNext);
-      if (atEdge) {
-        window.clearTimeout(recenterTimer);
-        recenterTimer = window.setTimeout(() => {
-          if (!catalogView.recentering) renderCatalogWindow(global);
-        }, 80);
-      }
-    };
-    catalogGrid.addEventListener("scroll", () => {
-      window.clearTimeout(scrollTimer);
-      scrollTimer = window.setTimeout(settleCatalogScroll, 90);
-    }, { passive: true });
-    if ("onscrollend" in catalogGrid) {
-      catalogGrid.addEventListener("scrollend", settleCatalogScroll, { passive: true });
-    }
-    catalogGrid.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") { event.preventDefault(); scrollToCatalogPage(catalogView.page + 1, true); }
-      else if (event.key === "ArrowLeft") { event.preventDefault(); scrollToCatalogPage(catalogView.page - 1, true); }
-      else if (event.key === "Home") { event.preventDefault(); scrollToCatalogPage(0, true); }
-      else if (event.key === "End") { event.preventDefault(); scrollToCatalogPage(catalogView.pages - 1, true); }
-    });
-    let resizeTimer = 0;
-    window.addEventListener("resize", () => {
-      window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(() => {
-        if (catalogPerPage() !== catalogView.perPage) return;
-        renderCatalogWindow(catalogView.page);
-      }, 160);
-    });
-  }
-  const reflow = () => {
-    if (catalogPerPage() === catalogView.perPage) return;
-    renderCatalog(false, { preserve: true });
-  };
-  const mqMobile = window.matchMedia("(max-width: 640px)");
-  const mqTablet = window.matchMedia("(max-width: 1020px)");
-  if (mqMobile.addEventListener) mqMobile.addEventListener("change", reflow);
-  if (mqTablet.addEventListener) mqTablet.addEventListener("change", reflow);
+  if (catalogPrev) catalogPrev.addEventListener("click", () => setCatalogPage(catalogView.page - 1));
+  if (catalogNext) catalogNext.addEventListener("click", () => setCatalogPage(catalogView.page + 1));
+  let resizeTimer = 0;
+  window.addEventListener("resize", () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      if (catalogPerPage() === catalogView.perPage) return;
+      renderCatalog(false, { preserve: true });
+    }, 150);
+  }, { passive: true });
 }
 
 // ===== 13 · MODAL DE PRÉVIA =====
@@ -490,6 +375,12 @@ export function restoreMovedShot() {
 }
 export function openPreview(index, trigger) {
   const site = SITES[index];
+  const url = site ? safeUrl(site.url) : "";
+  // Modo seção: sem modal; abre a demonstração em nova aba.
+  if (isSectionMode()) {
+    if (url) window.open(url, "_blank", "noopener");
+    return;
+  }
   const modal = $("#previewModal");
   const fallback = $("#modalFallback");
   const art = $("#modalPreviewArt");
@@ -498,7 +389,6 @@ export function openPreview(index, trigger) {
   const openLink = $("#modalOpen");
   const openTop = $("#modalOpenTop");
   const cta = $("#modalCta");
-  const url = site ? safeUrl(site.url) : "";
   if (!site || !modal || !url) return;
   restoreMovedShot();
   modalState.index = index;
@@ -567,7 +457,7 @@ export function closePreview() {
 }
 export function initModal() {
   const modal = $("#previewModal");
-  if (!modal) return;
+  if (!modal || isSectionMode()) return;
   // Delegacao no documento: vale para o catalogo e para os destaques.
   document.addEventListener("click", (event) => {
     const target = event.target;

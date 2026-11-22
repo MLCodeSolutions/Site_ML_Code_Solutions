@@ -19,7 +19,7 @@
 .btn span{position:relative; z-index:2}
 .btn svg{position:relative; z-index:2; width:18px; height:18px; flex:0 0 auto}
 .btn:active{transform:scale(.97)!important}
-.btn-sm{--btn-h:42px; padding:.6rem 1rem; font-size:.82rem}
+.btn-sm{--btn-h:44px; padding:.6rem 1rem; font-size:.82rem}
 .btn-lg{--btn-h:58px; padding:1rem 1.9rem; font-size:1rem}
 .btn-primary{
   color:#fff;
@@ -39,7 +39,7 @@
 .btn-outline:hover{border-color:color-mix(in oklab, var(--neon-1) 70%, transparent); box-shadow:var(--glow-md); transform:translateY(-2px)}
 .btn-ghost{color:var(--muted); background:transparent; border-color:var(--line-soft)}
 .btn-ghost:hover{color:var(--ink); border-color:var(--line); background:color-mix(in oklab, var(--neon-1) 7%, transparent)}
-.btn-ring{background:var(--bg-1); color:var(--ink)}
+.btn-ring{background:color-mix(in oklab, var(--bg-2) 58%, transparent); border-color:color-mix(in oklab, var(--neon-1) 32%, transparent); color:var(--ink)}
 .btn-ring::before{
   content:""; position:absolute; inset:-1px; z-index:0; border-radius:inherit; padding:1px;
   background:conic-gradient(from var(--angle), transparent 0 55%, var(--neon-1) 68%, var(--magenta) 80%, transparent 92% 100%);

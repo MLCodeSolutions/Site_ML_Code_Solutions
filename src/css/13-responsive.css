@@ -21,7 +21,6 @@
   .btn-lg{--btn-h:54px; padding:.9rem 1.2rem; font-size:.9rem}
   .cta-actions{flex-direction:column; width:100%}
   .cta-actions .btn{width:100%}
-  .footer-bottom{justify-content:center; text-align:center}
 }
 @media (hover:none){
   .service-card:hover,.model-card:hover{--lift:0}

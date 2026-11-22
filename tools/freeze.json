@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-22T19:21:00.850Z",
+  "generatedAt": "2026-11-22T19:56:06.223Z",
   "ids": [
     "structuredData",
     "mlcStroke",
@@ -98,7 +98,7 @@
     "modalCta"
   ],
   "sections": {
-    "inicio": "a615c4a7c410b465",
+    "inicio": "c81a31dd8307aaa8",
     "problema": "8f5bad912d8b5732",
     "servicos": "9b93f9ebc5ca920a",
     "processo": "1bb1f117d48bc3de",
@@ -110,6 +110,6 @@
     "contato": "22ccf16604c69abc",
     "legal": "3d2e4fe7e4471d2c"
   },
-  "textHash": "970d8ef59447effb",
-  "chars": 13531
+  "textHash": "9948c8e117a8dd70",
+  "chars": 13512
 }

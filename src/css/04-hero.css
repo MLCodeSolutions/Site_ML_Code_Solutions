@@ -28,7 +28,7 @@
   font-family:var(--font-display); font-weight:800;
   font-size:clamp(2.5rem, 4.6vw, 3.7rem);
   line-height:.88; letter-spacing:-.045em;
-  margin:1.1rem 0 1.4rem;
+  margin:1rem 0 1.5rem;
   text-wrap:balance;
 }
 .hero-title .line{display:block; overflow:hidden; padding-bottom:.06em}
@@ -52,8 +52,8 @@
   max-width:52ch; color:var(--muted); font-size:clamp(1rem,1.3vw,1.12rem);
   opacity:0; animation:fadeUp .9s var(--ease-out) 1.55s forwards;
 }
-.hero-actions{display:flex; flex-wrap:wrap; align-items:center; gap:.8rem; margin-top:1.8rem; opacity:0; animation:fadeUp .9s var(--ease-out) 1.7s forwards}
-.hero-meta{display:flex; flex-wrap:wrap; align-items:center; gap:.7rem 1rem; margin-top:1.7rem; color:var(--muted); font-size:.76rem; opacity:0; animation:fadeUp .9s var(--ease-out) 1.85s forwards}
+.hero-actions{display:flex; flex-wrap:wrap; align-items:center; gap:1rem; margin-top:2rem; opacity:0; animation:fadeUp .9s var(--ease-out) 1.7s forwards}
+.hero-meta{display:flex; flex-wrap:wrap; align-items:center; gap:.5rem 1rem; margin-top:1.5rem; color:var(--muted); font-size:.78rem; opacity:0; animation:fadeUp .9s var(--ease-out) 1.85s forwards}
 .hero-meta b{color:var(--ink)}
 .hero-meta .dot{width:4px; height:4px; border-radius:50%; background:var(--neon-1); box-shadow:var(--glow-sm)}
 .hero-visual{position:relative; min-height:clamp(360px,42vw,520px); display:grid; place-items:center; perspective:1200px}
@@ -62,7 +62,7 @@
 .hero-glow{position:absolute; width:64%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle, color-mix(in oklab, var(--neon-1) 40%, transparent), transparent 66%); filter:blur(46px); z-index:-1; opacity:.8; animation:floatY 9s ease-in-out infinite}
 .float-chip{
   position:absolute; z-index:3; display:flex; align-items:center; gap:.5rem;
-  padding:.6rem .8rem; border-radius:12px; font-size:.7rem; font-weight:700; letter-spacing:.02em;
+  padding:.5rem .75rem; border-radius:12px; font-size:.75rem; font-weight:700; letter-spacing:.02em;
   color:var(--ink); background:color-mix(in oklab, var(--bg-1) 84%, transparent);
   border:1px solid color-mix(in oklab, var(--neon-1) 38%, transparent);
   box-shadow:0 14px 40px -18px #000, inset 0 1px 0 rgba(255,255,255,.06);
@@ -72,11 +72,10 @@
 .float-chip svg{width:15px; height:15px; color:var(--neon-3)}
 .float-chip--a{top:10%; left:-2%; animation-delay:-1s}
 .float-chip--b{right:-3%; top:32%; animation-delay:-3s}
-.float-chip--c{left:8%; bottom:6%; animation-delay:-5s}
 .scroll-cue{
   position:absolute; left:50%; bottom:2rem; z-index:3; transform:translateX(-50%);
-  display:flex; flex-direction:column; align-items:center; gap:.55rem;
-  color:var(--muted); font-size:.64rem; letter-spacing:.22em; text-transform:uppercase; text-decoration:none;
+  display:flex; flex-direction:column; align-items:center; gap:.5rem;
+  color:var(--muted); font-size:.75rem; letter-spacing:.18em; text-transform:uppercase; text-decoration:none;
 }
 .scroll-cue i{position:relative; width:1px; height:44px; background:linear-gradient(var(--neon-1), transparent); overflow:hidden}
 .scroll-cue i::after{content:""; position:absolute; inset:0; background:var(--neon-3); transform:translateY(-100%); animation:scrollDot 2.2s var(--ease-out) infinite; box-shadow:var(--glow-sm)}
@@ -91,18 +90,19 @@
   .hero-title{font-size:clamp(2.05rem,9.2vw,4.4rem)}
   .float-chip--a{left:0; top:2%}
   .float-chip--b{right:0; top:24%}
-  .float-chip--c{left:4%; bottom:0}
   .scroll-cue{display:none}
 }
 @media (max-width:520px){
   .hero-actions .btn{width:100%}
-  .hero-meta{font-size:.7rem}
-  .float-chip{font-size:.62rem; padding:.5rem .65rem}
+  .hero-meta{font-size:.75rem}
+  .float-chip{font-size:.75rem; padding:.5rem .75rem}
   .float-chip--b{display:none}
+  .hero .eyebrow{display:block; letter-spacing:.08em; line-height:1.7}
+  .hero .eyebrow::before{display:inline-block; vertical-align:middle; width:1.5rem; margin-right:.5rem}
 }
 @media (prefers-reduced-motion:reduce){
   .hero-title .line > span{transform:none; animation:none}
   .hero-sub,.hero-actions,.hero-meta{opacity:1; animation:none}
-  .hero-fog,.hero-glow,.float-chip,.hero-title em,.scroll-cue i::after,.film-grain{animation:none}
+  .hero-fog,.hero-glow,.float-chip,.hero-title em,.scroll-cue i::after{animation:none}
 }
 

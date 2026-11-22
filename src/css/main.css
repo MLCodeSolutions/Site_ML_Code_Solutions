@@ -1,7 +1,7 @@
 /* ============================================================
    ML CODE SOLUTIONS · main.css
    Ordem de importacao = ordem original do <style>.
-   NAO reordenar: overrides (.btn-ring, .footer-bottom) dependem dela.
+   NAO reordenar: a cascata final depende desta ordem.
    ============================================================ */
 @import "./00-tokens.css";
 @import "./01-base.css";
