@@ -14,7 +14,9 @@
     "freeze": "node tools/freeze.mjs",
     "check": "node tools/check.mjs",
     "sri": "node tools/sri.mjs",
-    "preview": "node tools/preview.mjs"
+    "preview": "node tools/preview.mjs",
+    "heights": "node tools/heights.mjs",
+    "qa:embeds": "node tools/qa-embeds.mjs"
   },
   "engines": {
     "node": ">=20"

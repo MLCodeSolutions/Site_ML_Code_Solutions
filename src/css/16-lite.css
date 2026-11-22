@@ -21,8 +21,10 @@ html.lite .wa-fab,
 html.lite .cta-grid,
 html.lite .plan--featured::before,
 html.lite .model-niche-badge svg{animation:none!important}
+html.lite .marquee{-webkit-mask:none!important; mask:none!important}
 html.lite .marquee-track{animation:none!important; transform:none!important; flex-wrap:wrap; width:auto; justify-content:center}
-html.lite .marquee-group{flex-wrap:wrap; justify-content:center; gap:.35rem 0}
+html.lite .marquee-group{flex:0 1 auto; width:100%; flex-wrap:wrap; justify-content:center; padding-right:0; gap:.35rem 1.4rem}
+html.lite .marquee-item{gap:.6rem; font-size:.82rem}
 html.lite .marquee-group:last-child{display:none}
 html.lite .site-header,
 html.lite .model-preview,

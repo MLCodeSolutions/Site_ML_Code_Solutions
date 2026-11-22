@@ -28,7 +28,15 @@ const server = http.createServer((req, res) => {
 <body style="font:16px/1.6 system-ui;background:#07030f;color:#eee;padding:2rem">
 <h1>Preview local</h1>
 <ul><li><a style="color:#c084fc" href="/src/index.html">Fonte (/src/index.html)</a></li>
-<li><a style="color:#c084fc" href="/dist/embed.html">Embed gerado (/dist/embed.html)</a></li></ul>
+<li><a style="color:#c084fc" href="/dist/embed.html">embed.html</a></li>
+<li><a style="color:#c084fc" href="/dist/embed-hero.html">embed-hero.html</a></li>
+<li><a style="color:#c084fc" href="/dist/embed-problema.html">embed-problema.html</a></li>
+<li><a style="color:#c084fc" href="/dist/embed-servicos.html">embed-servicos.html</a></li>
+<li><a style="color:#c084fc" href="/dist/embed-processo.html">embed-processo.html</a></li>
+<li><a style="color:#c084fc" href="/dist/embed-nichos-modelos.html">embed-nichos-modelos.html</a></li>
+<li><a style="color:#c084fc" href="/dist/embed-planos.html">embed-planos.html</a></li>
+<li><a style="color:#c084fc" href="/dist/embed-sobre-faq.html">embed-sobre-faq.html</a></li>
+<li><a style="color:#c084fc" href="/dist/embed-contato.html">embed-contato.html</a></li></ul>
 </body>`,
     );
     return;

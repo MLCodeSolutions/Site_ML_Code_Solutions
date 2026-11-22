@@ -112,7 +112,20 @@ for (const rel of ["assets/svg/catalog-empty.svg", "assets/svg/selo-demonstracoe
   if (exists(rel) && !read(rel).includes("prefers-reduced-motion")) problems.push(`SVG ${rel} sem prefers-reduced-motion`);
 }
 notes.push(`covers SVG: ${coverSlugs.length} (<= 6 KB cada)`);
-// 9) Build (quando existir): embed sem title/JSON-LD/style inline
+// 9) Build: embed unico + 8 embeds por secao
+const SECTION_EMBEDS = [
+  ["embed-hero.html", "hero"],
+  ["embed-problema.html", "problema"],
+  ["embed-servicos.html", "servicos"],
+  ["embed-processo.html", "processo"],
+  ["embed-nichos-modelos.html", "nichos-modelos"],
+  ["embed-planos.html", "planos"],
+  ["embed-sobre-faq.html", "sobre-faq"],
+  ["embed-contato.html", "contato"],
+];
+const CHROME_FORBIDDEN = ["site-header", "wa-fab", "mobile-cta", "cookie-banner", "previewModal", "skip-link", "vignette", "to-top", 'id="stars"'];
+const VIEWPORTS = ["390", "768", "1440"];
+
 if (exists("dist/embed.html")) {
   const embed = read("dist/embed.html");
   if (/<title>/i.test(embed)) problems.push("dist/embed.html ainda tem <title>");
@@ -120,7 +133,53 @@ if (exists("dist/embed.html")) {
   if (/<style[\s>]/i.test(embed)) problems.push("dist/embed.html tem CSS inline");
   if (!/integrity="sha384-/.test(embed)) problems.push("dist/embed.html sem SRI");
   if (!/http-equiv="Content-Security-Policy"/.test(embed)) problems.push("dist/embed.html sem meta CSP");
-  notes.push(`dist/embed.html: ${(Buffer.byteLength(embed) / 1024).toFixed(1)} KB`);
+  if (!/data-embed-mode="single"/.test(embed)) problems.push("dist/embed.html sem data-embed-mode=single");
+  notes.push('dist/embed.html: ' + (Buffer.byteLength(embed) / 1024).toFixed(1) + " KB");
+}
+
+for (const [file, section] of SECTION_EMBEDS) {
+  const rel = "dist/" + file;
+  if (!exists(rel)) { problems.push("Embed faltando: " + rel + " (rode npm run build)"); continue; }
+  const embed = read(rel);
+  if (!/data-embed-mode="section"/.test(embed)) problems.push(rel + " sem data-embed-mode=section");
+  if (!embed.includes('data-embed-section="' + section + '"')) problems.push(rel + " sem data-embed-section=" + section);
+  if (!/<main id="conteudo">/.test(embed)) problems.push(rel + " sem main#conteudo");
+  if (!/<symbol id="i-[a-z-]+"/.test(embed)) problems.push(rel + " sem sprite de icones");
+  if (!/integrity="sha384-/.test(embed)) problems.push(rel + " sem SRI");
+  if (!/crossorigin="anonymous"/.test(embed)) problems.push(rel + " sem crossorigin=anonymous");
+  if (!/http-equiv="Content-Security-Policy"/.test(embed)) problems.push(rel + " sem meta CSP");
+  if (!/<link rel="preload"[^>]*as="font"/.test(embed)) problems.push(rel + " sem preload de fonte");
+  if (/<title>/i.test(embed)) problems.push(rel + " ainda tem <title>");
+  if (/application\/ld\+json/.test(embed)) problems.push(rel + " ainda tem JSON-LD");
+  if (/<style[\s>]/i.test(embed)) problems.push(rel + " tem CSS inline");
+  for (const chrome of CHROME_FORBIDDEN) {
+    if (embed.includes(chrome)) problems.push(rel + " tem chrome proibido: " + chrome);
+  }
+  notes.push(rel + ": " + (Buffer.byteLength(embed) / 1024).toFixed(1) + " KB");
+}
+
+if (!exists("dist/heights.json")) {
+  problems.push("dist/heights.json ausente (rode npm run heights)");
+} else {
+  let heights = null;
+  try { heights = JSON.parse(read("dist/heights.json")); } catch (error) { problems.push("dist/heights.json invalido: " + error.message); }
+  if (heights) {
+    for (const viewport of VIEWPORTS) {
+      if (!heights.viewports || !heights.viewports[viewport]) problems.push("heights.json sem viewport " + viewport);
+    }
+    const sections = heights.sections || {};
+    for (const [, section] of SECTION_EMBEDS) {
+      const entry = sections[section];
+      if (!entry) { problems.push("heights.json sem secao " + section); continue; }
+      for (const viewport of VIEWPORTS) {
+        if (!Number.isInteger(entry[viewport]) || entry[viewport] <= 0) problems.push('heights.json: ' + section + '/' + viewport + " invalido");
+      }
+    }
+    const expected = SECTION_EMBEDS.map(([, section]) => section);
+    const extra = Object.keys(sections).filter((key) => !expected.includes(key));
+    if (extra.length) problems.push("heights.json com secao extra: " + extra.join(", "));
+    notes.push("heights: " + expected.length + " secoes x " + VIEWPORTS.length + " viewports");
+  }
 }
 
 // 10) Zero URLs moveis (raw/main) e zero inline/injecao de markup

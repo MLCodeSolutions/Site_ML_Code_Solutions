@@ -9,10 +9,12 @@ O Google Sites não serve arquivos relativos nem aceita `src`/`href` relativos d
 Por isso o build de produção injeta URLs absolutas do jsDelivr (`@v1.0.0`) com **SRI (sha384)** e
 gera um HTML pronto para colar no bloco de código incorporado.
 
-> **Estado atual (2026-11-22):** Fases 0, 1, 2, 3 e 4 concluídas. Assets em `assets/`, zero
-> `style=""`/`onerror`/`innerHTML`, URLs fixas em `data-base`, SRI e CSP (meta injetada pelo build)
-> ativos. Ainda não existem os embeds por seção (`dist/embed-*.html`) nem `dist/heights.json`
-> (Fase 5). O spike no Google Sites (CSP/SRI dentro do iframe) segue pendente de publicação.
+> **Estado atual (2026-11-22):** Fases 0–5 concluídas. Assets em `assets/`, zero
+> `style=""`/`onerror`/`innerHTML`, URLs fixas em `data-base`, SRI e CSP (meta injetada pelo
+> build) ativos. O build gera `dist/embed.html` (único) + os **8 embeds por seção**
+> (`dist/embed-hero.html` … `dist/embed-contato.html`) e `npm run heights` grava
+> `dist/heights.json` (390/768/1440). O spike no Google Sites (CSP/SRI dentro do iframe) segue
+> pendente de publicação.
 
 ---
 
@@ -21,7 +23,7 @@ gera um HTML pronto para colar no bloco de código incorporado.
 ```text
 Google Sites (documento publicado)
 └── bloco "Código incorporado" (iframe)
-    └── dist/embed.html  (ou dist/embed-*.html — planejado)
+    └── dist/embed-*.html  (8 embeds por seção)
         ├── <link> main.min.css   → https://cdn.jsdelivr.net/gh/...@v1.0.0/dist/main.min.css
         ├── <script> main.min.js  → https://cdn.jsdelivr.net/gh/...@v1.0.0/dist/main.min.js
         └── imagens/fontes/SVG    → https://cdn.jsdelivr.net/gh/...@v1.0.0/assets/...
@@ -69,17 +71,26 @@ tools/
   sri.mjs                 confere hashes SRI em dist
   preview.mjs             servidor local de preview
 dist/                     gerado pelo build (não versionar como fonte)
-  embed.html              embed único atual
+  embed.html              embed único (compatibilidade)
+  embed-hero.html         hero + marquee + stats
+  embed-problema.html     problema
+  embed-servicos.html     serviços
+  embed-processo.html     processo + divisor
+  embed-nichos-modelos.html  nichos + catálogo (68 modelos)
+  embed-planos.html       planos + pagamento
+  embed-sobre-faq.html    sobre + FAQ
+  embed-contato.html      contato + legal + footer
   main.min.css
   main.min.js
   integrity.json
+  heights.json            alturas medidas (npm run heights)
 ```
 
 > **Divergência registrada (Fase 1):** o CSS foi dividido em **18 módulos** (`00-tokens.css` …
 > `17-perf-fonts.css`), não nos 6 agrupamentos do plano. A ordem original da cascata é preservada
 > por `main.css`; reagrupar mudaria a ordem e os overrides.
 
-### Arquitetura alvo (Fase 5)
+### Estrutura gerada (Fase 5)
 
 ```text
 assets/
@@ -100,7 +111,7 @@ dist/
   embed-sobre-faq.html
   embed-contato.html
   integrity.json          hashes SRI
-  heights.json            alturas medidas em 390/768/1440 (planejado, Fase 5)
+  heights.json            alturas medidas em 390/768/1440 (npm run heights)
 ```
 
 A mudança para `assets/` foi feita na **Fase 3**. A fonte usa `../assets/...`; o build reescreve
@@ -122,21 +133,24 @@ A mudança para `assets/` foi feita na **Fase 3**. A fonte usa `../assets/...`; 
 | Comando | O que faz |
 |---|---|
 | `npm ci` | Instala as dependências exatas do lockfile (CI e máquina limpa). |
-| `npm run build` | Gera `dist/main.min.css`, `dist/main.min.js`, `dist/integrity.json` e `dist/embed.html` com URLs **relativas** (preview local). Aplica os budgets (embed < 80 KB, CSS gzip < 40 KB, JS gzip < 30 KB). |
-| `npm run build:release` | Mesmo build, mas injeta URLs absolutas do jsDelivr com a tag `v1.0.0` (`--cdn=...@v1.0.0`) e SRI. É o HTML que vai para o Google Sites. |
+| `npm run build` | Gera `dist/main.min.css`, `dist/main.min.js`, `dist/integrity.json`, `dist/embed.html` e os 8 `dist/embed-*.html` com URLs **relativas** (preview local). Aplica os budgets (cada embed < 80 KB; CSS gzip < 40 KB; JS gzip < 30 KB). |
+| `npm run build:release` | Mesmo build, mas injeta URLs absolutas do jsDelivr com a tag `v1.0.0` (`--cdn=...@v1.0.0`) e SRI. Gera os 9 HTML (único + 8 seções) que vão para o Google Sites. |
 | `npm run freeze` | Verifica se IDs, ordem de seções e copy continuam iguais ao baseline (`tools/freeze.json`). Falha em mudança não autorizada. |
 | `npm run freeze -- --update` | Atualiza o baseline **somente** depois de uma mudança de copy aprovada. |
-| `npm run check` | Valida sintaxe dos módulos JS, ausência de `<style>` inline, zero `style=""`/`onerror`/`innerHTML`, URLs `raw`/`@main`, JSON-LD, textos proibidos, 68 modelos/URLs únicas, prints WebP 600/1200, fontes, IDs duplicados e SVGs (viewBox, tamanho, reduced-motion). |
-| `npm run sri` | Confere se `dist/integrity.json` corresponde aos arquivos em `dist/` e se o `integrity` do `embed.html` está atualizado. |
+| `npm run check` | Valida sintaxe dos módulos JS, ausência de `<style>` inline, zero `style=""`/`onerror`/`innerHTML`, URLs `raw`/`@main`, JSON-LD, textos proibidos, 68 modelos/URLs únicas, prints WebP 600/1200, fontes, IDs duplicados, SVGs (viewBox, tamanho, reduced-motion), os 8 embeds (chrome proibido, CSP/SRI/preload) e `dist/heights.json` (8 seções x 3 viewports). |
+| `npm run sri` | Confere se `dist/integrity.json` corresponde aos arquivos em `dist/` e se o `integrity` dos 9 HTML de embed está atualizado. |
+| `npm run heights` | Mede as alturas dos 8 embeds em 390/768/1440 com Playwright + Edge, grava `dist/heights.json` e imprime a tabela markdown para o `docs/PUBLICAR.md`. |
+| `npm run qa:embeds` | QA headless dos 8 embeds + único em 390/768/1440: console/requests, chrome, scroll horizontal, catálogo, modal, FAQ, links `wa.me` e prints. Gera screenshots em `%TEMP%/kilo/w5-g`. |
 | `npm run preview` | Sobe um servidor local em `http://localhost:8080/` (porta opcional: `npm run preview -- 8081`). |
 
 Fluxo mínimo antes de publicar:
 
 ```bash
 npm ci
+npm run build:release
+npm run heights
 npm run check
 npm run freeze
-npm run build:release
 npm run sri
 ```
 
@@ -219,7 +233,10 @@ Ao adicionar um modelo:
    - no release (`--cdn`/`--base`), troca `../assets/` do HTML pela base absoluta (jsDelivr/tag);
      no preview local mantém caminhos relativos.
 2. `dist/embed.html` é o artefato a colar no Google Sites. **Não edite esse arquivo.**
-3. `npm run sri` garante que os hashes conferem com os arquivos e com o embed.
+3. Os 8 `dist/embed-*.html` são os artefatos por seção; `dist/embed.html` é o único de
+   contingência.
+4. `tools/heights.mjs` mede os embeds e grava `dist/heights.json`.
+5. `npm run sri` garante que os hashes conferem com os arquivos e com os 9 HTML de embed.
 
 Regras de tag:
 
@@ -270,8 +287,8 @@ Observações:
   Sites, fora do embed. Veja `docs/PUBLICAR.md`.
 - **Sem controle de headers.** O domínio é do Google: não é possível definir HSTS,
   `X-Frame-Options`, `X-Content-Type-Options` ou uma CSP de resposta real para a página publicada.
-- **Iframe sem auto-resize.** O Sites não redimensiona o iframe sozinho. As alturas são medidas e
-  informadas manualmente (planejado: `dist/heights.json`, Fase 5).
+- **Iframe sem auto-resize.** O Sites não redimensiona o iframe sozinho. As alturas são medidas por
+  `npm run heights` e gravadas em `dist/heights.json`; cole o valor correspondente em cada bloco.
 - **`position: fixed` dentro de iframe alto** não se comporta como na janela. Por isso o formato
   recomendado é **8 embeds por seção**; o embed único é contingência e cria rolagem dupla.
 - **Rolagem:** no modo seção o iframe não tem scroll interno; no embed único, o scroll é interno ao
@@ -284,7 +301,8 @@ Observações:
 ## 10. Atualizar uma release
 
 1. Edite a fonte (`src/`).
-2. Rode `npm run check`, `npm run freeze` e `npm run build:release`.
+2. Rode `npm run build:release` e `npm run heights`; depois `npm run check`, `npm run freeze` e
+   `npm run sri`.
 3. Crie uma **nova tag** imutável (ex.: `v1.0.1`).
 4. Faça commit + push do commit e da tag.
 5. Valide os arquivos no jsDelivr com a nova tag.

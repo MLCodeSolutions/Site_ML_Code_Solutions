@@ -307,6 +307,8 @@ export function renderCatalog(animate, options = {}) {
 export function initCatalogControls() {
   const input = $("#catalogSearch");
   const clear = $("#clearSearch");
+  // Embeds sem catalogo (hero, planos, etc.): nada para ligar.
+  if (!input && !clear && !catalogPrev && !catalogNext) return;
   if (input) {
     let timer = 0;
     input.addEventListener("input", () => {

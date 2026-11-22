@@ -9,7 +9,7 @@ Google Sites, do jsDelivr ou de qualquer serviço de terceiros usado na publica�
 Em escopo:
 
 - `src/` — HTML, CSS e JavaScript do site/embed.
-- `dist/` — artefatos gerados (`main.min.css`, `main.min.js`, `embed.html`, `integrity.json`).
+- `dist/` — artefatos gerados (`main.min.css`, `main.min.js`, `embed.html`, os 8 `embed-*.html`, `integrity.json`, `heights.json`).
 - `tools/` — scripts de build, freeze, check, SRI e preview.
 - Configuração de publicação: tag imutável, URLs do jsDelivr, atributos SRI e meta CSP.
 - Links externos gerados pelo site (`wa.me`, demonstrações no Google Sites) e o tratamento de
@@ -71,6 +71,9 @@ tratar o reporte conforme a gravidade. Não há SLA contratual nem recompensa fi
   scripts/styles/fontes/imagens apenas de `'self'` + jsDelivr, `object-src 'none'`,
   `base-uri 'none'`, `form-action 'none'`. A `meta` CSP depende de o Google Sites preservá-la; o
   spike de publicação ainda precisa confirmar (sem `frame-ancestors`, que não funciona em `meta`).
+- **Embeds por seção sem chrome global:** os 8 `embed-*.html` contêm apenas o sprite de ícones, a
+  seção correspondente e `<main id="conteudo">`; header, FAB, CTA mobile, banner de cookies e modal
+  são removidos pelo build e barrados por `npm run check`.
 - **Zero inline implementado:** `src/index.html` não tem `style=""`, handlers `onerror` nem scripts
   inline; `src/js` não usa `innerHTML`; `src/` e `tools/` não referenciam `raw.githubusercontent.com`
   nem `@main`. O build remove `<title>`, meta de SEO, OG/Twitter, canonical, favicon e JSON-LD do

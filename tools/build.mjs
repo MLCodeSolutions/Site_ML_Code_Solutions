@@ -1,4 +1,4 @@
-﻿import fs from "node:fs";
+import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import zlib from "node:zlib";
@@ -19,6 +19,7 @@ const cdn = cdnArg ? cdnArg.slice("--cdn=".length).replace(/\/+$/, "") : "";
 const dataBase = baseUrl || (cdn ? `${cdn}/assets/` : "");
 const cssHref = cdn ? `${cdn}/dist/main.min.css` : "main.min.css";
 const jsSrc = cdn ? `${cdn}/dist/main.min.js` : "main.min.js";
+const assetHref = (relative) => (dataBase ? dataBase + relative : "../assets/" + relative);
 
 const BUDGET_EMBED = 80 * 1024;
 const BUDGET_CSS_GZ = 40 * 1024;
@@ -27,6 +28,18 @@ const BUDGET_JS_GZ = 30 * 1024;
 const sri = (file) => "sha384-" + crypto.createHash("sha384").update(fs.readFileSync(file)).digest("base64");
 const kb = (n) => (n / 1024).toFixed(1) + " KB";
 const gz = (file) => zlib.gzipSync(fs.readFileSync(file)).length;
+
+// 8 embeds por secao, na ordem de publicacao no Google Sites.
+const SECTIONS = [
+  { name: "hero", file: "embed-hero.html" },
+  { name: "problema", file: "embed-problema.html" },
+  { name: "servicos", file: "embed-servicos.html" },
+  { name: "processo", file: "embed-processo.html" },
+  { name: "nichos-modelos", file: "embed-nichos-modelos.html" },
+  { name: "planos", file: "embed-planos.html" },
+  { name: "sobre-faq", file: "embed-sobre-faq.html" },
+  { name: "contato", file: "embed-contato.html" },
+];
 
 fs.rmSync(distDir, { recursive: true, force: true });
 fs.mkdirSync(distDir, { recursive: true });
@@ -64,30 +77,11 @@ const jsFile = path.join(distDir, "main.min.js");
 const integrity = { "main.min.css": sri(cssFile), "main.min.js": sri(jsFile) };
 fs.writeFileSync(path.join(distDir, "integrity.json"), JSON.stringify(integrity, null, 2) + "\n");
 
-// ---------- HTML do embed ----------
-let html = fs.readFileSync(path.join(srcDir, "index.html"), "utf8");
-
-html = html
-  .replace(/<title>[\s\S]*?<\/title>\s*/i, "")
-  .replace(/<meta name="(?:description|robots|author)"[^>]*>\s*/gi, "")
-  .replace(/<meta property="og:[^"]*"[^>]*>\s*/gi, "")
-  .replace(/<meta name="twitter:[^"]*"[^>]*>\s*/gi, "")
-  .replace(/<link rel="canonical"[^>]*>\s*/gi, "")
-  .replace(/<link rel="icon"[^>]*>\s*/gi, "")
-  .replace(/<link rel="preconnect"[^>]*>\s*/gi, "")
-  .replace(/<link rel="preload"[^>]*>\s*/gi, "")
-  .replace(/<script type="application\/ld\+json"[\s\S]*?<\/script>\s*/i, "");
-
-const htmlTag = dataBase
-  ? `<html lang="pt-BR" class="js" data-base="${dataBase}">`
-  : `<html lang="pt-BR" class="js">`;
-html = html.replace(/<html lang="pt-BR"[^>]*>/, htmlTag);
-html = html.replace(/<body>/, `<body data-embed-mode="single">`);
-// No release, `../assets/` nao resolve dentro do embed: troca pela base absoluta (jsDelivr/tag).
-if (dataBase) html = html.replace(/(src|href)="\.\.\/assets\//g, `$1="${dataBase}`);
+// ---------- HTML: pecas reutilizaveis ----------
+const source = fs.readFileSync(path.join(srcDir, "index.html"), "utf8");
 
 // CSP via <meta> (frame-ancestors nao funciona em meta; documentado em SECURITY.md).
-const csp = [
+const cspMeta = `<meta http-equiv="Content-Security-Policy" content="${[
   "default-src 'none'",
   "script-src 'self' https://cdn.jsdelivr.net",
   "style-src 'self' https://cdn.jsdelivr.net",
@@ -97,45 +91,186 @@ const csp = [
   "base-uri 'none'",
   "form-action 'none'",
   "object-src 'none'",
-].join("; ");
-html = html.replace(/<head>/, `<head>\n<meta http-equiv="Content-Security-Policy" content="${csp}">`);
+].join("; ")}">`;
+
+const fontPreloads = ["manrope-latin.woff2", "syne-latin.woff2"]
+  .map((font) => `<link rel="preload" href="${assetHref("fonts/" + font)}" as="font" type="font/woff2" crossorigin>`)
+  .join("\n");
 
 const cssTag = `<link rel="stylesheet" href="${cssHref}" integrity="${integrity["main.min.css"]}" crossorigin="anonymous">`;
 const jsTag = `<script src="${jsSrc}" integrity="${integrity["main.min.js"]}" crossorigin="anonymous" defer></script>`;
 
-if (!html.includes('<link rel="stylesheet" href="css/main.css">')) throw new Error("link de CSS nao encontrado");
-if (!html.includes('<script type="module" src="js/main.js"></script>')) throw new Error("script de entrada nao encontrado");
-html = html
-  .replace('<link rel="stylesheet" href="css/main.css">', cssTag)
-  .replace('<script type="module" src="js/main.js"></script>', jsTag);
+const htmlTag = dataBase
+  ? `<html lang="pt-BR" class="js" data-base="${dataBase}">`
+  : `<html lang="pt-BR" class="js">`;
 
-const embed = await htmlMinify(html, {
-  collapseWhitespace: true,
-  conservativeCollapse: true,
-  removeComments: true,
-  removeRedundantAttributes: false,
-  minifyCSS: false,
-  minifyJS: false,
-  keepClosingSlash: true,
-  caseSensitive: true,
-});
-fs.writeFileSync(path.join(distDir, "embed.html"), embed);
+const minify = async (html) => {
+  const out = await htmlMinify(html, {
+    collapseWhitespace: true,
+    conservativeCollapse: true,
+    removeComments: true,
+    removeRedundantAttributes: false,
+    minifyCSS: false,
+    minifyJS: false,
+    keepClosingSlash: true,
+    caseSensitive: true,
+  });
+  // Remove BOM herdado da fonte e espaco final; o embed vai para um textarea do Sites.
+  return out.replace(/^\uFEFF/, "").trim() + "\n";
+};
+
+const toBase = (html) => (dataBase ? html.replace(/(src|href)="\.\.\/assets\//g, `$1="${dataBase}`) : html);
+
+// Remove do embed tudo o que o Google Sites ignora (SEO/JSON-LD), mantendo fontes.
+function stripSeoHead(html) {
+  return html
+    .replace(/<title>[\s\S]*?<\/title>\s*/i, "")
+    .replace(/<meta name="(?:description|robots|author)"[^>]*>\s*/gi, "")
+    .replace(/<meta property="og:[^"]*"[^>]*>\s*/gi, "")
+    .replace(/<meta name="twitter:[^"]*"[^>]*>\s*/gi, "")
+    .replace(/<link rel="canonical"[^>]*>\s*/gi, "")
+    .replace(/<link rel="icon"[^>]*>\s*/gi, "")
+    .replace(/<link rel="preconnect"[^>]*>\s*/gi, "")
+    .replace(/<script type="application\/ld\+json"[\s\S]*?<\/script>\s*/i, "");
+}
+
+function injectCsp(html) {
+  if (!html.includes("<head>")) throw new Error("head nao encontrado para CSP");
+  return html.replace(/<head>/, `<head>\n${cspMeta}`);
+}
+
+function swapAssetTags(html) {
+  if (!html.includes('<link rel="stylesheet" href="css/main.css">')) throw new Error("link de CSS nao encontrado");
+  if (!html.includes('<script type="module" src="js/main.js"></script>')) throw new Error("script de entrada nao encontrado");
+  return html
+    .replace('<link rel="stylesheet" href="css/main.css">', cssTag)
+    .replace('<script type="module" src="js/main.js"></script>', jsTag);
+}
+
+function stripStars(html) {
+  return html.replace(/\s*<canvas id="stars"[^>]*><\/canvas>/i, "");
+}
+
+// ---------- HTML: sprite e blocos por secao ----------
+const spriteMatch = source.match(/<svg class="svg-defs"[\s\S]*?<\/svg>/);
+if (!spriteMatch) throw new Error("sprite de icones (.svg-defs) nao encontrado");
+const sprite = spriteMatch[0];
+
+function extractSection(id) {
+  const start = source.search(new RegExp(`<section\\b[^>]*\\bid="${id}"`));
+  if (start < 0) throw new Error(`secao #${id} nao encontrada`);
+  const end = source.indexOf("</section>", start);
+  if (end < 0) throw new Error(`fechamento da secao #${id} nao encontrado`);
+  return source.slice(start, end + "</section>".length);
+}
+
+function extractDivider(afterIndex) {
+  const start = source.indexOf('<div class="section-divider"', afterIndex);
+  if (start < 0) throw new Error("divisor nao encontrado");
+  const end = source.indexOf("</div>", start);
+  if (end < 0) throw new Error("fechamento do divisor nao encontrado");
+  return source.slice(start, end + "</div>".length);
+}
+
+const footerStart = source.indexOf('<footer class="site-footer"');
+const footerEnd = source.indexOf("</footer>", footerStart);
+if (footerStart < 0 || footerEnd < 0) throw new Error("footer nao encontrado");
+const footer = source.slice(footerStart, footerEnd + "</footer>".length);
+
+const heroStart = source.search(/<section\b[^>]*\bid="inicio"/);
+const heroEnd = source.indexOf('<div class="section-divider"', heroStart);
+if (heroStart < 0 || heroEnd < 0) throw new Error("bloco hero/marquee/stats nao encontrado");
+const heroBlock = stripStars(source.slice(heroStart, heroEnd));
+
+const processoSelf = extractSection("processo");
+const processoBlock = processoSelf + "\n" + extractDivider(source.indexOf(processoSelf) + processoSelf.length);
+
+const sectionBlocks = {
+  hero: heroBlock,
+  problema: extractSection("problema"),
+  servicos: extractSection("servicos"),
+  processo: processoBlock,
+  "nichos-modelos": extractSection("nichos") + "\n" + extractSection("modelos"),
+  planos: extractSection("planos"),
+  "sobre-faq": extractSection("sobre") + "\n" + extractSection("faq"),
+  contato: extractSection("contato") + "\n" + extractSection("legal") + "\n" + footer,
+};
+
+// Aviso minimo apenas onde o conteudo depende de JS (catalogo/planos).
+const NOSCRIPT = '<noscript><div class="noscript-box"><strong>ML Code Solutions</strong><p>Ative o JavaScript para ver o conteudo completo.</p></div></noscript>';
+const noscriptFor = (name) => (name === "nichos-modelos" || name === "planos" ? "\n" + NOSCRIPT : "");
+
+async function buildSectionEmbed(name, blocks) {
+  const html = `<!doctype html>
+${htmlTag}
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+${cspMeta}
+${fontPreloads}
+${cssTag}
+</head>
+<body data-embed-mode="section" data-embed-section="${name}">
+${sprite}
+<main id="conteudo">
+${blocks}
+</main>${noscriptFor(name)}
+${jsTag}
+</body>
+</html>`;
+  return await minify(toBase(html));
+}
+
+// ---------- HTML: embed unico (compatibilidade) ----------
+async function buildSingleEmbed() {
+  let html = stripSeoHead(source);
+  html = html.replace(/<html lang="pt-BR"[^>]*>/, htmlTag);
+  html = html.replace(/<body>/, `<body data-embed-mode="single">`);
+  // No release, `../assets/` nao resolve dentro do embed: troca pela base absoluta (jsDelivr/tag).
+  html = toBase(html);
+  html = injectCsp(html);
+  html = swapAssetTags(html);
+  return await minify(html);
+}
+
+// ---------- Escreve os HTML ----------
+const singleFile = path.join(distDir, "embed.html");
+const single = await buildSingleEmbed();
+fs.writeFileSync(singleFile, single);
+
+const written = [];
+for (const { name, file } of SECTIONS) {
+  const html = await buildSectionEmbed(name, sectionBlocks[name]);
+  if (!html.includes('data-embed-mode="section"')) throw new Error(`${file}: modo secao ausente`);
+  if (!html.includes('id="i-wa"')) throw new Error(`${file}: sprite de icones ausente`);
+  fs.writeFileSync(path.join(distDir, file), html);
+  written.push({ file, size: Buffer.byteLength(html) });
+}
 
 // ---------- Relatorio / budgets ----------
-const embedSize = fs.statSync(path.join(distDir, "embed.html")).size;
+// heights.json medido fica versionado em tools/ e acompanha o build local.
+// `npm run heights` remede e atualiza as duas copias.
+const heightsSrc = path.join(root, "tools", "heights.json");
+if (fs.existsSync(heightsSrc)) fs.copyFileSync(heightsSrc, path.join(distDir, "heights.json"));
+
 const cssSize = fs.statSync(cssFile).size;
 const jsSize = fs.statSync(jsFile).size;
 const cssGz = gz(cssFile);
 const jsGz = gz(jsFile);
 
 const failures = [];
+const embedSize = Buffer.byteLength(single);
 if (embedSize > BUDGET_EMBED) failures.push(`embed.html ${kb(embedSize)} > ${kb(BUDGET_EMBED)}`);
+for (const { file, size } of written) {
+  if (size > BUDGET_EMBED) failures.push(`${file} ${kb(size)} > ${kb(BUDGET_EMBED)}`);
+}
 if (cssGz > BUDGET_CSS_GZ) failures.push(`main.min.css gzip ${kb(cssGz)} > ${kb(BUDGET_CSS_GZ)}`);
 if (jsGz > BUDGET_JS_GZ) failures.push(`main.min.js gzip ${kb(jsGz)} > ${kb(BUDGET_JS_GZ)}`);
 
 console.log("base:", dataBase || "(local: ../assets/)");
 console.log("assets:", cdn ? cssHref + " | " + jsSrc : "(relativos, preview local)");
-console.log(`embed.html      ${kb(embedSize).padStart(9)}`);
+console.log(`embed.html      ${kb(embedSize).padStart(9)}  (unico)`);
+for (const { file, size } of written) console.log(`${file.padEnd(27)} ${kb(size).padStart(9)}`);
 console.log(`main.min.css    ${kb(cssSize).padStart(9)}  gzip ${kb(cssGz)}`);
 console.log(`main.min.js     ${kb(jsSize).padStart(9)}  gzip ${kb(jsGz)}`);
 console.log("sha384 css:", integrity["main.min.css"]);
