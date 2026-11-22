@@ -3882,7 +3882,6 @@ function init() {
   initPreloader();
   initModal();
   initReveals();
-  initScrollUI();
 
   let deferredDone = false;
   const runDeferred = () => {
@@ -3891,6 +3890,7 @@ function init() {
     renderTabs();
     renderCatalog(false);
     initCatalogControls();
+    initScrollUI();
     bindTilt(document);
     initRipple();
     initMagnetic();
