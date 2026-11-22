@@ -1,0 +1,478 @@
+[
+  {
+    "title": "Agua e Sombra",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-aguaesombra",
+    "image": "mlcs-aguaesombra.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Atelie de Bichos",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-ateliedebichos",
+    "image": "mlcs-ateliedebichos.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Atelier Pelo",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-atelier-pelo",
+    "image": "mlcs-atelier-pelo.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Aurora Club Glass",
+    "nicho": "Cabeleireiro",
+    "url": "https://sites.google.com/view/mlcs-auroraclubglass",
+    "image": "mlcs-auroraclubglass.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Aurora Delicada",
+    "nicho": "Joalheria e acessórios",
+    "url": "https://sites.google.com/view/mlcs-aurora-delicada",
+    "image": "mlcs-aurora-delicada.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Aurora Pet Spa",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-aurora-pet-spa",
+    "image": "mlcs-aurora-pet-spa.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Bairro Ilustrado",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-bairroilustrado",
+    "image": "mlcs-bairroilustrado.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Banho Boom",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-banhoboom",
+    "image": "mlcs-banhoboom.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Banho Clube",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-banho-clube",
+    "image": "mlcs-banho-clube.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Bia em Casa",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-bia-em-casa",
+    "image": "mlcs-bia-em-casa.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Bicho Limpo",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-bicho-limpo",
+    "image": "mlcs-bicho-limpo.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Bigode Fino Retrô",
+    "nicho": "Cabeleireiro",
+    "url": "https://sites.google.com/view/mlcs-bigode-fino-retr",
+    "image": "mlcs-bigode-fino-retr.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Black & Gold Luxo",
+    "nicho": "Manicure",
+    "url": "https://sites.google.com/view/mlcs-black-gold-luxo",
+    "image": "mlcs-black-gold-luxo.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Botânica",
+    "nicho": "Joalheria e acessórios",
+    "url": "https://sites.google.com/view/mlcs-botanica",
+    "image": "mlcs-botanica.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Brigada",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-brigada",
+    "image": "mlcs-brigada.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Brutalista",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-brutalista",
+    "image": "mlcs-brutalista.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Casa Aberta Vet",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-casa-aberta-vet/cav",
+    "image": "cav.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Casa Cacau",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-casacacau",
+    "image": "mlcs-casacacau.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Casa Segura",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-casasegura",
+    "image": "mlcs-casasegura.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Casa Solene",
+    "nicho": "Joalheria e acessórios",
+    "url": "https://sites.google.com/view/mlcs-casasolene",
+    "image": "mlcs-casasolene.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Circuito Neon",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-circuitoneon",
+    "image": "mlcs-circuitoneon.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Clara Vet",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-clara-vet",
+    "image": "mlcs-clara-vet.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Clinica de Bolso",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-clinica-de-bolso",
+    "image": "mlcs-clinica-de-bolso.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Corte Cru Brutal",
+    "nicho": "Cabeleireiro",
+    "url": "https://sites.google.com/view/mlcs-cortecrubrutal",
+    "image": "mlcs-cortecrubrutal.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Dia de Banho",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-diadebanho",
+    "image": "mlcs-diadebanho.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Doce Encontro",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-doce-encontro",
+    "image": "mlcs-doce-encontro.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Doce Herança",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-doce-herana",
+    "image": "mlcs-doce-herana.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Doce Linha",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-doce-linha",
+    "image": "mlcs-doce-linha.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Doce Ofício",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-doce-ofcio",
+    "image": "mlcs-doce-ofcio.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Editorial Agua",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-editorialagua",
+    "image": "mlcs-editorialagua.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Espelho Minimal",
+    "nicho": "Joalheria e acessórios",
+    "url": "https://sites.google.com/view/mlcs-espelho-minimal",
+    "image": "mlcs-espelho-minimal.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Fade Lab Neon",
+    "nicho": "Cabeleireiro",
+    "url": "https://sites.google.com/view/mlcs-fadelabneon",
+    "image": "mlcs-fadelabneon.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Folha e Focinho",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-folha-e-focinho",
+    "image": "mlcs-folha-e-focinho.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Forja Masculina",
+    "nicho": "Joalheria e acessórios",
+    "url": "https://sites.google.com/view/mlcs-forjamasculina",
+    "image": "mlcs-forjamasculina.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Glassmorphism Neon Feminino",
+    "nicho": "Manicure",
+    "url": "https://sites.google.com/view/mlcs-glassmorphismneonfeminino",
+    "image": "mlcs-glassmorphismneonfeminino.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Iris Vet",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-irisvet",
+    "image": "mlcs-irisvet.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Jardim Doce",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-jardim-doce",
+    "image": "mlcs-jardim-doce.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Lilás Dreamy",
+    "nicho": "Manicure",
+    "url": "https://sites.google.com/view/mlcs-lils-dreamy",
+    "image": "mlcs-lils-dreamy.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Meia-Noite Noir",
+    "nicho": "Cabeleireiro",
+    "url": "https://sites.google.com/view/mlcs-meia-noitenoir",
+    "image": "mlcs-meia-noitenoir.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Mesa Bordô",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-mesa-bord",
+    "image": "mlcs-mesa-bord.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Nina Vet",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-nina-vet",
+    "image": "mlcs-nina-vet.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Noturno Premium",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-noturno-premium",
+    "image": "mlcs-noturno-premium.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Nude Minimalista Editorial",
+    "nicho": "Manicure",
+    "url": "https://sites.google.com/view/mlcs-nude-minimalista-edit",
+    "image": "mlcs-nude-minimalista-edit.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Oficina Calma",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-casaechave",
+    "image": "mlcs-casaechave.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Orbita Vet",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-orbitavet",
+    "image": "mlcs-orbitavet.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Papelaria Terra",
+    "nicho": "Joalheria e acessórios",
+    "url": "https://sites.google.com/view/mlcs-papelariaterra",
+    "image": "mlcs-papelariaterra.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Patinha Spa",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-patinhaspa",
+    "image": "mlcs-patinhaspa.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Patrulha Pet 24h",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-patrulha-pet-24h",
+    "image": "mlcs-patrulha-pet-24h.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Pérola Clássica",
+    "nicho": "Joalheria e acessórios",
+    "url": "https://sites.google.com/view/mlcs-prola-clssica",
+    "image": "mlcs-prola-clssica.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Planta Tecnica",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-plantatecnica",
+    "image": "mlcs-plantatecnica.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Plantao 24h",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-plantao-24h",
+    "image": "mlcs-plantao-24h.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Pop Colorida",
+    "nicho": "Joalheria e acessórios",
+    "url": "https://sites.google.com/view/mlcs-popcolorida",
+    "image": "mlcs-popcolorida.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Pop Colorido Divertido",
+    "nicho": "Manicure",
+    "url": "https://sites.google.com/view/mlcs-popcoloridodivertido",
+    "image": "mlcs-popcoloridodivertido.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Pop Cupcake",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-popcupcake",
+    "image": "mlcs-popcupcake.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Pote Doce",
+    "nicho": "Confeitaria / doceria",
+    "url": "https://sites.google.com/view/mlcs-pote-doce",
+    "image": "mlcs-pote-doce.jpg",
+    "skipped": false
+  },
+  {
+    "title": "Rosa Romântico",
+    "nicho": "Manicure",
+    "url": "https://sites.google.com/view/mlcs-rosaromntico",
+    "image": "mlcs-rosaromntico.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Sofia Vet",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-sofia-vet",
+    "image": "mlcs-sofia-vet.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Studio Camélia",
+    "nicho": "Cabeleireiro",
+    "url": "https://sites.google.com/view/mlcs-studiocamelia",
+    "image": "mlcs-studiocamelia.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Suico Direto",
+    "nicho": "Prestadores de serviços gerais",
+    "url": "https://sites.google.com/view/mlcs-suico-direto",
+    "image": "mlcs-suico-direto.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Terracota Boho",
+    "nicho": "Manicure",
+    "url": "https://sites.google.com/view/mlcs-terracota-boho",
+    "image": "mlcs-terracota-boho.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Verde Spa Natural",
+    "nicho": "Manicure",
+    "url": "https://sites.google.com/view/mlcs-verde-spa-natural",
+    "image": "mlcs-verde-spa-natural.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Vet de Familia",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-vetdefamilia",
+    "image": "mlcs-vetdefamilia.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Vet na Mala",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-vet-na-mala",
+    "image": "mlcs-vet-na-mala.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Vet no Papo",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-vet-no-papo",
+    "image": "mlcs-vet-no-papo.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Veterinarias a domicilio",
+    "nicho": "Veterinária",
+    "url": "https://sites.google.com/view/mlcs-veterinariasadomicilio",
+    "image": "mlcs-veterinariasadomicilio.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Vinho & Rosé Sofisticado",
+    "nicho": "Manicure",
+    "url": "https://sites.google.com/view/mlcs-vinhorossofisticado",
+    "image": "mlcs-vinhorossofisticado.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Vitrine Neon",
+    "nicho": "Joalheria e acessórios",
+    "url": "https://sites.google.com/view/mlcs-vitrine-neon",
+    "image": "mlcs-vitrine-neon.jpg",
+    "skipped": true
+  },
+  {
+    "title": "Zoomies",
+    "nicho": "Banho e tosa",
+    "url": "https://sites.google.com/view/mlcs-zoomies",
+    "image": "mlcs-zoomies.jpg",
+    "skipped": true
+  }
+]
