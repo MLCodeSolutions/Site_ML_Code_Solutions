@@ -3,8 +3,15 @@ PRINTS DO CATÁLOGO (68 modelos)
 Estas imagens são capturas reais dos sites-modelo e já estão publicadas em:
 https://github.com/MLCodeSolutions/Site_ML_Code_Solutions (pasta prints)
 
-O site usa automaticamente:
-https://raw.githubusercontent.com/MLCodeSolutions/Site_ML_Code_Solutions/main/prints/<arquivo>.jpg
+Cada modelo tem três arquivos:
+- <slug>.jpg        (fallback 1200x900)
+- <slug>-600.webp   (celular)
+- <slug>-1200.webp  (desktop/retina)
 
-Se o catálogo mudar, rode novamente tools/capture-prints.mjs e envie os .jpg
-atualizados para a pasta prints do repositório.
+O site usa automaticamente:
+https://raw.githubusercontent.com/MLCodeSolutions/Site_ML_Code_Solutions/main/prints/<arquivo>
+
+As fontes variáveis ficam em /fonts e também são servidas por esse repositório.
+
+Se o catálogo mudar, rode novamente tools/capture-prints.mjs e tools/optimize-prints.ps1
+e envie os arquivos atualizados para a pasta prints.
