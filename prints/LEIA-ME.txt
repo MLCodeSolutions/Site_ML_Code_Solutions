@@ -1,15 +1,10 @@
 PRINTS DO CATÁLOGO (68 modelos)
 
-Estas imagens são capturas reais dos sites-modelo e deixam o catálogo instantâneo,
-sem depender de serviços de screenshot (mShots/thum.io).
+Estas imagens são capturas reais dos sites-modelo e já estão publicadas em:
+https://github.com/MLCodeSolutions/Site_ML_Code_Solutions (pasta prints)
 
-COMO PUBLICAR (uma vez):
+O site usa automaticamente:
+https://raw.githubusercontent.com/MLCodeSolutions/Site_ML_Code_Solutions/main/prints/<arquivo>.jpg
 
-1. Abra https://github.com/MLCodeSolutions/Site_ML_Code_Solutions
-2. Clique em "Add file" > "Upload files".
-3. Arraste a pasta "prints" inteira (ou os 68 arquivos .jpg) e confirme o commit na branch "main".
-4. Pronto. O site usa automaticamente:
-   https://raw.githubusercontent.com/MLCodeSolutions/Site_ML_Code_Solutions/main/prints/<arquivo>.jpg
-
-Sem esse upload, os cards mostram a capa artística SVG (nunca ficam em branco).
-Se o catálogo mudar, rode novamente tools/capture-prints.mjs para atualizar as capturas.
+Se o catálogo mudar, rode novamente tools/capture-prints.mjs e envie os .jpg
+atualizados para a pasta prints do repositório.
