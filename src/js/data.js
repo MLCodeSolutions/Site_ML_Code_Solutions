@@ -10,7 +10,7 @@
 // ============================================
 // Fonte: Sites modelos.xlsx (aba Modelos).
 // Preserve nome, nicho e URL exatamente como na planilha.
-// "image" é opcional: por padrão o catálogo usa prints/<slug-da-url>.jpg.
+// "image" é opcional: por padrão o catálogo usa assets/img/prints/<slug-da-url>-{600,1200}.webp.
 // Se o print não existir, a capa SVG do card permanece (sem tela em branco).
 export const SITES = [
   { titulo: "Studio Camélia", nicho: "Cabeleireiro", url: "https://sites.google.com/view/mlcs-studiocamelia", image: "", descricao: "Visual delicado e acolhedor para um salão com atendimento próximo." },

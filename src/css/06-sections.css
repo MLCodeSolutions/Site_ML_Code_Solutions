@@ -6,6 +6,10 @@
    07B · DOR E SOLUÇÃO
    ============================================================ */
 .pain-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+.pain-grid > .pain-card:nth-child(1){--i:0}
+.pain-grid > .pain-card:nth-child(2){--i:1}
+.pain-grid > .pain-card:nth-child(3){--i:2}
+.pain-grid > .pain-card:nth-child(4){--i:3}
 .pain-card{
   position:relative;overflow:hidden;padding:1.5rem;border-radius:var(--radius);
   border:1px solid var(--line-soft);
@@ -14,10 +18,10 @@
 }
 .pain-card:hover{transform:translateY(-3px);border-color:color-mix(in oklab,var(--neon-1) 36%,transparent);box-shadow:0 26px 56px -44px #000,0 0 34px -24px var(--neon-1)}
 .pain-art{height:clamp(112px,9vw,136px);margin:-.5rem 0 1rem;background-position:center;background-repeat:no-repeat;background-size:contain}
-.pain-card:nth-child(1) .pain-art{background-image:url("../../svg/problema/01.svg")}
-.pain-card:nth-child(2) .pain-art{background-image:url("../../svg/problema/02.svg")}
-.pain-card:nth-child(3) .pain-art{background-image:url("../../svg/problema/03.svg")}
-.pain-card:nth-child(4) .pain-art{background-image:url("../../svg/problema/04.svg")}
+.pain-card:nth-child(1) .pain-art{background-image:url("../../assets/svg/problema/01.svg")}
+.pain-card:nth-child(2) .pain-art{background-image:url("../../assets/svg/problema/02.svg")}
+.pain-card:nth-child(3) .pain-art{background-image:url("../../assets/svg/problema/03.svg")}
+.pain-card:nth-child(4) .pain-art{background-image:url("../../assets/svg/problema/04.svg")}
 .pain-card h3{font-family:var(--font-display);font-size:.98rem;letter-spacing:-.01em;margin-bottom:.5rem}
 .pain-card p{color:var(--muted);font-size:.82rem;line-height:1.6}
 .cta-strip{
@@ -41,6 +45,12 @@
    08 · SERVIÇOS
    ============================================================ */
 .services-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem}
+.services-grid > .service-cell:nth-child(1){--i:0}
+.services-grid > .service-cell:nth-child(2){--i:1}
+.services-grid > .service-cell:nth-child(3){--i:2}
+.services-grid > .service-cell:nth-child(4){--i:3}
+.services-grid > .service-cell:nth-child(5){--i:4}
+.services-grid > .service-cell:nth-child(6){--i:5}
 .services-grid > .cta-strip{grid-column:1/-1}
 .service-card{
   position:relative; isolation:isolate; overflow:hidden;
@@ -86,6 +96,9 @@
 .service-card:hover .i-bar{transform-origin:bottom; animation:barGrow 1s var(--ease-out)}
 .service-card:hover .i-cursor{animation:cursorMove 1.2s var(--ease-out)}
 .service-card:hover .i-wave{animation:wave 1s ease-in-out}
+.i-needle{transform-origin:20px 28px}
+.i-bar:nth-of-type(2){animation-delay:.08s}
+.i-bar:nth-of-type(3){animation-delay:.16s}
 @keyframes needle{0%,100%{transform:rotate(0)}55%{transform:rotate(46deg)}}
 @keyframes nudge{0%,100%{transform:translateX(0)}45%{transform:translateX(4px)}}
 @keyframes playPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.16)}}
@@ -105,6 +118,10 @@
    ============================================================ */
 .process{overflow:hidden}
 .timeline{position:relative; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1.5rem; padding-top:5rem}
+.timeline > .step:nth-child(3){--i:0}
+.timeline > .step:nth-child(4){--i:1}
+.timeline > .step:nth-child(5){--i:2}
+.timeline > .step:nth-child(6){--i:3}
 .timeline-line{position:absolute; left:0; right:0; top:24px; width:100%; height:40px; overflow:visible; pointer-events:none}
 .timeline-line path{stroke-dasharray:1; stroke-dashoffset:1; transition:stroke-dashoffset 2.1s var(--ease-out)}
 .timeline.is-drawn .timeline-line path{stroke-dashoffset:0}

@@ -5,8 +5,10 @@ import { chromium } from "playwright-core";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const html = fs.readFileSync(path.join(root, "src", "js", "data.js"), "utf8");
-const outDir = path.join(root, "prints");
+const outDir = path.join(root, "tools", "archive", "prints-jpg");
+const manifestDir = path.join(root, "assets", "img", "prints");
 fs.mkdirSync(outDir, { recursive: true });
+fs.mkdirSync(manifestDir, { recursive: true });
 
 const pattern = /\{\s*titulo:\s*"([^"]+)"\s*,\s*nicho:\s*"([^"]+)"\s*,\s*url:\s*"([^"]+)"/g;
 const items = [];
@@ -93,7 +95,7 @@ await Promise.all([worker(1), worker(2), worker(3)]);
 await browser.close();
 
 manifest.sort((a, b) => a.title.localeCompare(b.title, "pt-BR"));
-fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2));
+fs.writeFileSync(path.join(manifestDir, "manifest.json"), JSON.stringify(manifest, null, 2));
 if (failures.length) {
   fs.writeFileSync(path.join(outDir, "falhas.txt"), failures.join("\n"));
 } else {

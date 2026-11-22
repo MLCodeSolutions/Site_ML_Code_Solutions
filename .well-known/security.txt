@@ -1,0 +1,11 @@
+# security.txt — ML Code Solutions (documental, RFC 9116)
+# NÃO é servido na raiz do domínio: o site está no Google Sites, que não publica
+# /.well-known/security.txt. Existe apenas como referência no repositório.
+# Decisão do Gate 0: sem e-mail público. Use os canais privados abaixo.
+Contact: https://github.com/MLCodeSolutions/Site_ML_Code_Solutions/security/advisories/new
+Contact: https://github.com/MLCodeSolutions
+Expires: 2027-11-22T00:00:00.000Z
+Preferred-Languages: pt-BR, en
+Canonical: https://raw.githubusercontent.com/MLCodeSolutions/Site_ML_Code_Solutions/main/.well-known/security.txt
+# Escopo: código deste repositório e embeds via jsDelivr. Não cobre Google Sites,
+# jsDelivr, GitHub, navegadores ou os sites de demonstração. Não é assinado.

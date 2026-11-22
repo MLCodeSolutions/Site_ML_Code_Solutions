@@ -1,0 +1,18 @@
+PRINTS DO CATÁLOGO (68 modelos)
+
+O deploy usa somente WebP, em assets/img/prints:
+- <slug>-600.webp   (celular)
+- <slug>-1200.webp  (desktop/retina)
+
+Os JPGs originais (fallback de regeneração) ficam em tools/archive/prints-jpg,
+fora do deploy. O runtime nunca referencia JPG.
+
+Base das imagens:
+- produção: <html data-base="https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@vX.Y.Z/assets/">
+- preview local: ../assets/img/prints/
+
+As fontes variáveis ficam em assets/fonts.
+
+Se o catálogo mudar, rode:
+  node tools/capture-prints.mjs     (gera JPG em tools/archive/prints-jpg + manifest.json aqui)
+  tools/optimize-prints.ps1         (gera -600/-1200 WebP em assets/img/prints)

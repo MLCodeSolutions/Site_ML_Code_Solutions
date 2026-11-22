@@ -28,11 +28,9 @@ export const CONFIG = {
     mensalidade: "Não. O site é publicado no Google Sites sem mensalidade da ML Code Solutions. Só há custo se você quiser um domínio próprio ou um serviço de terceiros, sempre informado antes.",
     extras: "Domínio próprio, páginas extras, textos/fotos adicionais e alterações fora do escopo são orçados à parte."
   },
-  // Prints reais do catálogo: imagens já capturadas, hospedadas no GitHub.
-  // O Google Sites não serve arquivos relativos, por isso usamos URL absoluta.
+  // Prints reais do catálogo: a base vem de `data-base` no build de produção
+  // (jsDelivr com tag imutável) ou de ../assets/img/prints/ no preview local.
   // Se a imagem não existir, o card mantém a capa SVG (nunca fica em branco).
-  printsBase: "https://raw.githubusercontent.com/MLCodeSolutions/Site_ML_Code_Solutions/main/prints/",
-  printsCdn: "https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@main/prints/",
   sobre: {
     texto: "Sou Mateus, engenheiro de software e responsável pela ML Code Solutions. Crio sites diretos ao ponto para pequenos negócios que precisam existir com profissionalismo na internet, sem complicação e sem depender de agência.",
     assinatura: "Mateus · ML Code Solutions"
@@ -46,7 +44,7 @@ export const CONFIG = {
   seo: {
     title: "Sites profissionais por R$ 89,99 em até 5 dias | ML Code Solutions",
     description: "Sites profissionais para pequenos negócios. R$ 89,99 via Pix na entrega, no ar em até 5 dias úteis e sem mensalidade. Atendimento 100% online no WhatsApp.",
-    image: "https://raw.githubusercontent.com/MLCodeSolutions/Site_ML_Code_Solutions/main/capa-og-1200x630.jpg"
+    image: "../assets/img/og-1200x630.jpg"
   },
   whatsappMensagens: {
     header: "Olá! Vim pelo site da ML Code Solutions e gostaria de um orçamento para o site do meu negócio.",

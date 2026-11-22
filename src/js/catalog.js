@@ -4,7 +4,7 @@
    ============================================================ */
 import { CONFIG } from "./config.js";
 import { SITES, nicheMeta } from "./data.js";
-import { $, $$, assetUrl, attachShot, domainOf, icon, lite, make, normalizeText, reduced, safeUrl, waLink } from "./util.js";
+import { $, $$, assetUrl, attachShot, domainOf, icon, lite, make, normalizeText, reduced, safeUrl, svgNode, waLink } from "./util.js";
 import { bindTilt, observeReveals, trackEvent } from "./ui.js";
 // ===== 11 · CAPAS DO CATÁLOGO (SVG) =====
 // ===== 12 · CATÁLOGO (ENGINE) =====
@@ -78,7 +78,8 @@ export function renderTabs() {
     else {
       const glyph = document.createElement("span");
       glyph.className = "tab-icon";
-      glyph.innerHTML = nicheMeta(entry.nicho).icon;
+      const glyphNode = svgNode(nicheMeta(entry.nicho).icon);
+      if (glyphNode) glyph.replaceChildren(glyphNode);
       button.append(glyph);
     }
     button.append(make("span", "tab-label", entry.nicho));
@@ -124,7 +125,8 @@ export function buildModelCell(site, index, order, eager) {
   preview.append(icon("i-eye"));
   const badge = make("span", "model-niche-badge");
   const badgeIcon = make("span", "badge-icon");
-  badgeIcon.innerHTML = meta.icon;
+  const badgeNode = svgNode(meta.icon);
+  if (badgeNode) badgeIcon.replaceChildren(badgeNode);
   badge.append(badgeIcon, document.createTextNode(site.nicho));
   cover.append(preview, badge);
   card.append(cover);

@@ -28,6 +28,17 @@ export function icon(id, className) {
   svg.appendChild(use);
   return svg;
 }
+export function svgNode(markup) {
+  const text = String(markup || "").trim();
+  if (!text) return null;
+  // DOMParser não injeta markup na página; o <template> normaliza o fragmento.
+  const doc = new DOMParser().parseFromString(text, "text/html");
+  const parsed = doc.body.firstElementChild;
+  if (!parsed) return null;
+  const template = document.createElement("template");
+  template.content.append(parsed);
+  return template.content.firstElementChild;
+}
 export function safeUrl(raw) {
   try {
     const url = new URL(String(raw));
@@ -55,7 +66,7 @@ export function printFileName(site) {
 }
 export function assetBase() {
   const base = document.documentElement.dataset.base;
-  return base ? base.replace(/\/?$/, "/") : "../";
+  return base ? base.replace(/\/?$/, "/") : "../assets/";
 }
 export function assetUrl(pathname) {
   return assetBase() + String(pathname).replace(/^\/+/, "");
@@ -68,10 +79,8 @@ export function printBases() {
     bases.push(base.replace(/\/?$/, "/") + "img/prints/");
     return bases;
   }
-  // Dev: o index.html fica em /src, os prints na raiz do projeto.
-  bases.push("../prints/");
-  if (CONFIG.printsBase) bases.push(CONFIG.printsBase);
-  if (CONFIG.printsCdn && !bases.includes(CONFIG.printsCdn)) bases.push(CONFIG.printsCdn);
+  // Dev: o index.html fica em /src; os prints ficam em /assets/img/prints/.
+  bases.push("../assets/img/prints/");
   return bases;
 }
 export function attachShot(container, site, options = {}) {
@@ -102,7 +111,7 @@ export function attachShot(container, site, options = {}) {
     img.width = 1200;
     img.height = 900;
     img.sizes = sizes;
-    img.src = base + file;
+    img.src = base + stem + "-1200.webp";
     img.loading = options.eager ? "eager" : "lazy";
     img.fetchPriority = options.eager ? "high" : "auto";
     img.decoding = "async";

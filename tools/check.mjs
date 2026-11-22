@@ -70,23 +70,23 @@ for (const site of sites) {
     continue;
   }
   for (const suffix of ["-600.webp", "-1200.webp"]) {
-    if (!exists(path.join("prints", slug + suffix))) missing.push(slug + suffix);
+    if (!exists(path.join("assets", "img", "prints", slug + suffix))) missing.push(slug + suffix);
   }
 }
 if (missing.length) problems.push(`Prints WebP faltando (${missing.length}): ` + missing.slice(0, 8).join(", "));
 
 // 7) Fontes / SVG / OG
 for (const font of ["manrope-latin.woff2", "manrope-latin-ext.woff2", "syne-latin.woff2", "syne-latin-ext.woff2"]) {
-  if (!exists(path.join("fonts", font))) problems.push("Fonte faltando: " + font);
+  if (!exists(path.join("assets", "fonts", font))) problems.push("Fonte faltando (assets/fonts): " + font);
 }
-const ctaSvg = path.join(root, "svg", "cta-aurora.svg");
-if (!fs.existsSync(ctaSvg)) problems.push("SVG do CTA faltando: svg/cta-aurora.svg");
+const ctaSvg = path.join(root, "assets", "svg", "cta-aurora.svg");
+if (!fs.existsSync(ctaSvg)) problems.push("SVG do CTA faltando: assets/svg/cta-aurora.svg");
 else {
   const svg = fs.readFileSync(ctaSvg, "utf8");
   if (!svg.includes("prefers-reduced-motion")) problems.push("SVG do CTA sem prefers-reduced-motion");
   if (svg.length > 40000) problems.push("SVG do CTA acima de 40 KB");
 }
-if (!exists("capa-og-1200x630.jpg")) problems.push("Imagem OG faltando: capa-og-1200x630.jpg");
+if (!exists("assets/img/og-1200x630.jpg")) problems.push("Imagem OG faltando: assets/img/og-1200x630.jpg");
 
 // 8) IDs duplicados
 const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
@@ -96,7 +96,7 @@ if (dupes.length) problems.push("IDs duplicados: " + [...new Set(dupes)].join(",
 // 9) SVGs externos (covers + apoio)
 const coverSlugs = [...dataJs.matchAll(/slug:\s*"([^"]+)"/g)].map((m) => m[1]);
 for (const slug of coverSlugs) {
-  const rel = path.join("svg", "covers", slug + ".svg");
+  const rel = path.join("assets", "svg", "covers", slug + ".svg");
   if (!exists(rel)) { problems.push("Cover faltando: " + rel); continue; }
   const svg = read(rel);
   if (!svg.startsWith("<svg")) problems.push(`Cover ${rel} sem raiz <svg>`);
@@ -105,10 +105,10 @@ for (const slug of coverSlugs) {
   if (Buffer.byteLength(svg) > 6144) problems.push(`Cover ${rel} acima de 6 KB`);
   if (/<image\b|href="https?:/.test(svg)) problems.push(`Cover ${rel} com dependencia externa`);
 }
-for (const rel of ["svg/catalog-empty.svg", "svg/selo-demonstracoes.svg", "svg/image-loading.svg"]) {
+for (const rel of ["assets/svg/catalog-empty.svg", "assets/svg/selo-demonstracoes.svg", "assets/svg/image-loading.svg"]) {
   if (!exists(rel)) problems.push("SVG faltando: " + rel);
 }
-for (const rel of ["svg/catalog-empty.svg", "svg/selo-demonstracoes.svg"]) {
+for (const rel of ["assets/svg/catalog-empty.svg", "assets/svg/selo-demonstracoes.svg"]) {
   if (exists(rel) && !read(rel).includes("prefers-reduced-motion")) problems.push(`SVG ${rel} sem prefers-reduced-motion`);
 }
 notes.push(`covers SVG: ${coverSlugs.length} (<= 6 KB cada)`);
@@ -119,9 +119,35 @@ if (exists("dist/embed.html")) {
   if (/application\/ld\+json/.test(embed)) problems.push("dist/embed.html ainda tem JSON-LD");
   if (/<style[\s>]/i.test(embed)) problems.push("dist/embed.html tem CSS inline");
   if (!/integrity="sha384-/.test(embed)) problems.push("dist/embed.html sem SRI");
+  if (!/http-equiv="Content-Security-Policy"/.test(embed)) problems.push("dist/embed.html sem meta CSP");
   notes.push(`dist/embed.html: ${(Buffer.byteLength(embed) / 1024).toFixed(1)} KB`);
 }
 
+// 10) Zero URLs moveis (raw/main) e zero inline/injecao de markup
+const walk = (dir) => {
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walk(full));
+    else out.push(full);
+  }
+  return out;
+};
+const textExt = new Set([".html", ".css", ".js", ".mjs", ".ps1", ".json", ".txt"]);
+const self = path.resolve(fileURLToPath(import.meta.url));
+for (const dir of [path.join(root, "src"), path.join(root, "tools")]) {
+  for (const file of walk(dir)) {
+    if (!textExt.has(path.extname(file)) || path.resolve(file) === self) continue;
+    if (file.includes(path.join("tools", "archive"))) continue;
+    const rel = path.relative(root, file).replace(/\\/g, "/");
+    const content = fs.readFileSync(file, "utf8");
+    if (/raw\.githubusercontent\.com/.test(content)) problems.push("URL raw do GitHub em " + rel);
+    if (new RegExp("@" + "main" + "\\b").test(content)) problems.push("Referencia movel em " + rel);
+  }
+}
+if (/style="/.test(html)) problems.push("src/index.html ainda tem style=\"\" inline");
+if (/\bonerror=/i.test(html)) problems.push("src/index.html ainda tem handler onerror inline");
+if (/\binnerHTML\b/.test(jsSource)) problems.push("src/js ainda usa innerHTML");
 if (problems.length) {
   console.log("PROBLEMAS:");
   problems.forEach((item) => console.log("- " + item));

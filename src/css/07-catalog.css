@@ -200,10 +200,10 @@
 .catalog-empty p{color:var(--muted); font-size:.84rem; margin-bottom:1rem}
 .catalog-empty .btn{--btn-h:44px; font-size:.76rem}
 .demo-seal{display:flex; align-items:center; gap:.55rem; margin:-.2rem 0 .9rem; color:var(--muted); font-size:.78rem; line-height:1.5}
-.demo-seal-icon{flex:0 0 auto; width:26px; height:26px; background:url("../../svg/selo-demonstracoes.svg") center/contain no-repeat; filter:drop-shadow(0 0 10px color-mix(in oklab, var(--neon-1) 45%, transparent))}
+.demo-seal-icon{flex:0 0 auto; width:26px; height:26px; background:url("../../assets/svg/selo-demonstracoes.svg") center/contain no-repeat; filter:drop-shadow(0 0 10px color-mix(in oklab, var(--neon-1) 45%, transparent))}
 .model-cover.shot-pending::before{
   content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
-  background-image:url("../../svg/image-loading.svg");
+  background-image:url("../../assets/svg/image-loading.svg");
   background-size:200% 100%; background-repeat:repeat-x;
   animation:shotSlide 1.5s linear infinite; opacity:.55;
 }

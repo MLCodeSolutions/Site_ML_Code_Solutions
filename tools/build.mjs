@@ -36,7 +36,7 @@ await esbuild({
   entryPoints: [path.join(srcDir, "css", "main.css")],
   bundle: true,
   outfile: path.join(distDir, "main.css"),
-  external: ["../../assets/*", "../../svg/*", "../../fonts/*"],
+  external: ["../../assets/*"],
   logLevel: "silent",
 });
 
@@ -83,6 +83,22 @@ const htmlTag = dataBase
   : `<html lang="pt-BR" class="js">`;
 html = html.replace(/<html lang="pt-BR"[^>]*>/, htmlTag);
 html = html.replace(/<body>/, `<body data-embed-mode="single">`);
+// No release, `../assets/` nao resolve dentro do embed: troca pela base absoluta (jsDelivr/tag).
+if (dataBase) html = html.replace(/(src|href)="\.\.\/assets\//g, `$1="${dataBase}`);
+
+// CSP via <meta> (frame-ancestors nao funciona em meta; documentado em SECURITY.md).
+const csp = [
+  "default-src 'none'",
+  "script-src 'self' https://cdn.jsdelivr.net",
+  "style-src 'self' https://cdn.jsdelivr.net",
+  "img-src 'self' https://cdn.jsdelivr.net data:",
+  "font-src 'self' https://cdn.jsdelivr.net",
+  "connect-src 'none'",
+  "base-uri 'none'",
+  "form-action 'none'",
+  "object-src 'none'",
+].join("; ");
+html = html.replace(/<head>/, `<head>\n<meta http-equiv="Content-Security-Policy" content="${csp}">`);
 
 const cssTag = `<link rel="stylesheet" href="${cssHref}" integrity="${integrity["main.min.css"]}" crossorigin="anonymous">`;
 const jsTag = `<script src="${jsSrc}" integrity="${integrity["main.min.js"]}" crossorigin="anonymous" defer></script>`;
@@ -117,7 +133,7 @@ if (embedSize > BUDGET_EMBED) failures.push(`embed.html ${kb(embedSize)} > ${kb(
 if (cssGz > BUDGET_CSS_GZ) failures.push(`main.min.css gzip ${kb(cssGz)} > ${kb(BUDGET_CSS_GZ)}`);
 if (jsGz > BUDGET_JS_GZ) failures.push(`main.min.js gzip ${kb(jsGz)} > ${kb(BUDGET_JS_GZ)}`);
 
-console.log("base:", dataBase || "(local: ../prints)");
+console.log("base:", dataBase || "(local: ../assets/)");
 console.log("assets:", cdn ? cssHref + " | " + jsSrc : "(relativos, preview local)");
 console.log(`embed.html      ${kb(embedSize).padStart(9)}`);
 console.log(`main.min.css    ${kb(cssSize).padStart(9)}  gzip ${kb(cssGz)}`);

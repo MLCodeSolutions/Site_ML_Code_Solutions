@@ -4,7 +4,7 @@
    ============================================================ */
 import { CONFIG } from "./config.js";
 import { SITES, nicheMeta } from "./data.js";
-import { $, formatPrice, icon, make, waLink } from "./util.js";
+import { $, formatPrice, icon, make, svgNode, waLink } from "./util.js";
 import { bindTilt } from "./ui.js";
 import { buildModelCell, nicheList, selectNiche } from "./catalog.js";
 // ===== 09 · PLANOS =====
@@ -72,9 +72,8 @@ export function renderNiches() {
     const count = SITES.filter((site) => site.nicho === nicho).length;
     const button = make("button", "niche-card");
     button.type = "button";
-    const glyph = document.createElement("span");
-    glyph.innerHTML = nicheMeta(nicho).icon;
-    if (glyph.firstElementChild) button.append(glyph.firstElementChild);
+    const glyph = svgNode(nicheMeta(nicho).icon);
+    if (glyph) button.append(glyph);
     const copy = document.createElement("div");
     copy.append(make("b", "", nicho), make("span", "", count + (count === 1 ? " modelo" : " modelos")));
     button.append(copy);

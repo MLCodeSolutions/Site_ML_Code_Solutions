@@ -3,35 +3,46 @@
    Extraido de index.html (fase 1)
    ============================================================ */
 import { $, lite } from "./util.js";
-import { bindTilt, initConsent, initHeader, initHeroCanvas, initHeroParallax, initLegalLinks, initMagnetic, initMobileCta, initReveals, initRipple, initScrollUI, initSectionPause, initTimeline, initTracking, syncContacts } from "./ui.js";
+import { bindTilt, initConsent, initHeader, initHeroCanvas, initHeroParallax, initImageFallback, initLegalLinks, initMagnetic, initMobileCta, initReveals, initRipple, initScrollUI, initSectionPause, initTimeline, initTracking, syncContacts, syncSeo } from "./ui.js";
 import { initCatalogControls, initModal, renderCatalog, renderTabs } from "./catalog.js";
 import { renderFeatured, renderNiches, renderPlans, renderUrgency } from "./sections.js";
 // ===== 25 · INICIALIZAÇÃO =====
+// Modo seção: o embed vive num iframe sem chrome global (header/FAB/scroll UI).
+// Mantém catálogo/seções, reveals, links legais, modal (auto-bloqueado) e
+// tilt/ripple/magnetic (interações de ponteiro que funcionam no iframe).
+// Desliga o que depende de scroll/chrome: tracking/consent/header/mobile CTA/
+// scroll UI, canvas, parallax e pausa por interseção.
 export function init() {
+  const sectionMode = document.body.dataset.embedMode === "section";
   document.documentElement.classList.toggle("lite", lite());
+  initImageFallback();
   renderUrgency();
   renderPlans();
   syncContacts();
-  initTracking();
-  initConsent();
-  initHeader();
+  if (!sectionMode) syncSeo();
   initModal();
   initReveals();
   initLegalLinks();
+  if (!sectionMode) {
+    initTracking();
+    initConsent();
+    initHeader();
+  }
 
   let deferredDone = false;
   const runExtras = () => {
     renderFeatured();
     renderNiches();
-    initMobileCta();
-    initScrollUI();
     bindTilt(document);
     initRipple();
     initMagnetic();
+    initTimeline();
+    if (sectionMode) return;
+    initMobileCta();
+    initScrollUI();
     initHeroCanvas();
     initHeroParallax();
     initSectionPause();
-    initTimeline();
   };
   const runDeferred = () => {
     if (deferredDone) return;

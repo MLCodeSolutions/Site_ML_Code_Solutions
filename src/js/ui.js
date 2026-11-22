@@ -32,7 +32,6 @@ export function syncContacts() {
     const from = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.min(...prices));
     $$("[data-price-from]").forEach((node) => { node.textContent = from; });
   }
-  syncSeo();
   syncPolicies();
 }
 export function syncSeo() {
@@ -69,6 +68,13 @@ export function syncSeo() {
     document.head.append(ogUrl);
   }
   ogUrl.setAttribute("content", home);
+}
+export function initImageFallback() {
+  $$(".cta-aurora").forEach((img) => {
+    const hide = () => { img.hidden = true; };
+    img.addEventListener("error", hide, { capture: true });
+    if (img.complete && img.naturalWidth === 0) hide();
+  });
 }
 export function syncPolicies() {
   $$("[data-policy]").forEach((node) => {
