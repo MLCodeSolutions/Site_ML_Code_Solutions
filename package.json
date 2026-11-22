@@ -1,6 +1,6 @@
 {
   "name": "site-ml-code-solutions",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "description": "Embed do site ML Code Solutions para Google Sites (fonte em /src, build em /dist).",
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "node tools/build.mjs",
-    "build:release": "node tools/build.mjs --cdn=https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1",
+    "build:release": "node tools/build.mjs --cdn=https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.2",
     "freeze": "node tools/freeze.mjs",
     "check": "node tools/check.mjs",
     "sri": "node tools/sri.mjs",

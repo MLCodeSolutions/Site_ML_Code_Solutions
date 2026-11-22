@@ -6,15 +6,15 @@ publicado por GitHub Pages: a página vive no Google Sites, e o HTML/CSS/JS e os
 repositório por meio do **jsDelivr com tag imutável**.
 
 O Google Sites não serve arquivos relativos nem aceita `src`/`href` relativos dentro do embed.
-Por isso o build de produção injeta URLs absolutas do jsDelivr (`@v1.0.1`) com **SRI (sha384)** e
+Por isso o build de produção injeta URLs absolutas do jsDelivr (`@v1.0.2`) com **SRI (sha384)** e
 gera um HTML pronto para colar no bloco de código incorporado.
 
 > **Estado atual (2026-11-22):** Fases 0–5 concluídas. Assets em `assets/`, zero
 > `style=""`/`onerror`/`innerHTML`, URLs fixas em `data-base`, SRI e CSP (meta injetada pelo
 > build) ativos. O build gera `dist/embed.html` (único) + os **8 embeds por seção**
 > (`dist/embed-hero.html` … `dist/embed-contato.html`) e `npm run heights` grava
-> `dist/heights.json` (390/768/1440). O spike no Google Sites (CSP/SRI dentro do iframe) segue
-> pendente de publicação.
+> `dist/heights.json` (390/768/1440). A partir da **v1.0.2**, cada embed traz um **boot loader
+> inline** com hash na CSP; o spike no Google Sites (CSP/SRI dentro do iframe) segue pendente.
 
 ---
 
@@ -24,9 +24,9 @@ gera um HTML pronto para colar no bloco de código incorporado.
 Google Sites (documento publicado)
 └── bloco "Código incorporado" (iframe)
     └── dist/embed-*.html  (8 embeds por seção)
-        ├── <link> main.min.css   → https://cdn.jsdelivr.net/gh/...@v1.0.1/dist/main.min.css
-        ├── <script> main.min.js  → https://cdn.jsdelivr.net/gh/...@v1.0.1/dist/main.min.js
-        └── imagens/fontes/SVG    → https://cdn.jsdelivr.net/gh/...@v1.0.1/assets/...
+        ├── <link> main.min.css   → https://cdn.jsdelivr.net/gh/...@v1.0.2/dist/main.min.css
+        ├── <script> main.min.js  → https://cdn.jsdelivr.net/gh/...@v1.0.2/dist/main.min.js
+        └── imagens/fontes/SVG    → https://cdn.jsdelivr.net/gh/...@v1.0.2/assets/...
 ```
 
 - **Fonte única:** `src/index.html` + `src/css/*` + `src/js/*`. Nunca edite arquivos em `dist/`;
@@ -134,10 +134,10 @@ A mudança para `assets/` foi feita na **Fase 3**. A fonte usa `../assets/...`; 
 |---|---|
 | `npm ci` | Instala as dependências exatas do lockfile (CI e máquina limpa). |
 | `npm run build` | Gera `dist/main.min.css`, `dist/main.min.js`, `dist/integrity.json`, `dist/embed.html` e os 8 `dist/embed-*.html` com URLs **relativas** (preview local). Aplica os budgets (cada embed < 80 KB; CSS gzip < 40 KB; JS gzip < 30 KB). |
-| `npm run build:release` | Mesmo build, mas injeta URLs absolutas do jsDelivr com a tag `v1.0.1` (`--cdn=...@v1.0.1`) e SRI. Gera os 9 HTML (único + 8 seções) que vão para o Google Sites. |
+| `npm run build:release` | Mesmo build, mas injeta URLs absolutas do jsDelivr com a tag `v1.0.2` (`--cdn=...@v1.0.2`) e SRI. Gera os 9 HTML (único + 8 seções) que vão para o Google Sites. |
 | `npm run freeze` | Verifica se IDs, ordem de seções e copy continuam iguais ao baseline (`tools/freeze.json`). Falha em mudança não autorizada. |
 | `npm run freeze -- --update` | Atualiza o baseline **somente** depois de uma mudança de copy aprovada. |
-| `npm run check` | Valida sintaxe dos módulos JS, ausência de `<style>` inline, zero `style=""`/`onerror`/`innerHTML`, URLs `raw`/`@main`, JSON-LD, textos proibidos, 68 modelos/URLs únicas, prints WebP 600/1200, fontes, IDs duplicados, SVGs (viewBox, tamanho, reduced-motion), os 8 embeds (chrome proibido, CSP/SRI/preload) e `dist/heights.json` (8 seções x 3 viewports). |
+| `npm run check` | Valida sintaxe dos módulos JS, `<style>` inline **apenas** o boot loader com hash CSP, zero `style=""`/`onerror`/`innerHTML`, URLs `raw`/`@main`, JSON-LD, textos proibidos, 68 modelos/URLs únicas, prints WebP 600/1200, fontes, IDs duplicados, SVGs (viewBox, tamanho, reduced-motion), os 8 embeds (chrome proibido, CSP/SRI/preload) e `dist/heights.json` (8 seções x 3 viewports). |
 | `npm run sri` | Confere se `dist/integrity.json` corresponde aos arquivos em `dist/` e se o `integrity` dos 9 HTML de embed está atualizado. |
 | `npm run heights` | Mede as alturas dos 8 embeds em 390/768/1440 com Playwright + Edge, grava `dist/heights.json` e imprime a tabela markdown para o `docs/PUBLICAR.md`. |
 | `npm run qa:embeds` | QA headless dos 8 embeds + único em 390/768/1440: console/requests, chrome, scroll horizontal, catálogo, modal, FAQ, links `wa.me` e prints. Gera screenshots em `%TEMP%/kilo/w5-g`. |
@@ -154,9 +154,9 @@ npm run freeze
 npm run sri
 ```
 
-> O `build:release` atual usa a tag fixa `v1.0.1` dentro do `package.json`. Para outra release,
+> O `build:release` atual usa a tag fixa `v1.0.2` dentro do `package.json`. Para outra release,
 > edite o script ou rode diretamente:
-> `node tools/build.mjs --cdn=https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1`
+> `node tools/build.mjs --cdn=https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.2`
 
 ---
 
@@ -212,7 +212,7 @@ Ao adicionar um modelo:
   vazios/selo/loading e `cta-aurora.svg`.
 - `assets/img/og-1200x630.jpg`: imagem de compartilhamento usada pelo Google Sites.
 - `tools/archive/prints-jpg/`: 68 JPG de captura/regeneração, fora do deploy.
-- `BASE_URL` em `<html data-base="https://cdn.jsdelivr.net/gh/...@v1.0.1/assets/">`; o JS lê
+- `BASE_URL` em `<html data-base="https://cdn.jsdelivr.net/gh/...@v1.0.2/assets/">`; o JS lê
   `document.documentElement.dataset.base` e a fonte local usa `../assets/`.
 
 > **SVG externo e CSS:** um SVG carregado via `<img>` **não herda** variáveis CSS da página.
@@ -244,7 +244,7 @@ Regras de tag:
 - Se o CSS/JS mudar, o hash muda; **todos** os embeds precisam ser recolados com a nova tag/SRI.
 - O jsDelivr pode levar alguns minutos para indexar uma tag recém-criada (404 inicial é normal).
 - Valide antes de publicar:
-  `https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1/dist/main.min.css`
+  `https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.2/dist/main.min.css`
   e o equivalente `.../main.min.js`.
 
 ---
@@ -256,7 +256,7 @@ Cada embed leva uma `meta` CSP sem `'unsafe-inline'`, injetada por `tools/build.
 ```text
 default-src 'none';
 script-src 'self' https://cdn.jsdelivr.net;
-style-src 'self' https://cdn.jsdelivr.net;
+style-src 'self' https://cdn.jsdelivr.net 'sha256-…';
 img-src 'self' https://cdn.jsdelivr.net data:;
 font-src 'self' https://cdn.jsdelivr.net;
 connect-src 'none';
@@ -273,7 +273,11 @@ Observações:
   domínios de script/connect/img e consentimento — e não suporta SRI.
 - **O Google Sites pode remover ou ignorar a `meta` CSP.** O spike da Fase 3 vai confirmar isso.
   Se for ignorada, restam SRI, zero inline, URLs fixas e `safeUrl` como mitigações.
-- **Zero inline:** `src/index.html` não tem `style=""`, `onerror` nem scripts inline;
+- **Boot loader inline (v1.0.2):** o único `<style>` inline é o `#mlcs-boot`, injetado depois da
+  minificação com hash `sha256` em `style-src`. Sem `'unsafe-inline'`; o hash muda se o CSS do loader
+  mudar. Ele cobre o HTML cru até o CSS carregar e desaparece quando o app marca `html.is-ready`;
+  fallback de 8 s se o JS falhar.
+- **Zero inline no restante:** `src/index.html` não tem `style=""`, `onerror` nem scripts inline;
   `src/js` não usa `innerHTML`; `src/` e `tools/` não referenciam `raw.githubusercontent.com` nem `@main`.
 
 ---

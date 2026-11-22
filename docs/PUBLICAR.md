@@ -4,11 +4,13 @@ Checklist operacional para publicar o embed da ML Code Solutions no Google Sites
 com tag imutável.
 
 > **Estado atual (2026-11-22):** Fases 0–5 concluídas. Assets em `assets/`, zero
-> inline/`innerHTML`, URLs fixas, SRI + CSP (meta injetada pelo build) e os **8 embeds por seção**
+> `style=""`/`innerHTML`, URLs fixas, SRI + CSP (meta injetada pelo build) e os **8 embeds por seção**
 > gerados em `dist/` (`embed-hero.html` … `embed-contato.html`). O catálogo usa carrossel de
-> **1 card por vez no mobile**, 2 no tablet e 3 no desktop. `npm run heights` grava
-> `dist/heights.json` (390/768/1440) e imprime a tabela de alturas abaixo. `dist/embed.html`
-> (embed único) continua sendo gerado para compatibilidade/contingência.
+> **1 card por vez no mobile**, 2 no tablet e 3 no desktop. A **v1.0.2** adiciona um **boot loader
+> inline** (único `<style>` com hash CSP) que cobre o HTML cru até o CSS/JS carregarem; recolha os
+> 9 blocos de novo. `npm run heights` grava `dist/heights.json` (390/768/1440) e imprime a tabela de
+> alturas abaixo. `dist/embed.html` (embed único) continua sendo gerado para
+> compatibilidade/contingência.
 
 **Pré-requisitos**
 
@@ -35,9 +37,9 @@ npm run freeze
 npm run sri
 ```
 
-- `build:release` usa por padrão a tag `v1.0.1` definida em `package.json`.
+- `build:release` usa por padrão a tag `v1.0.2` definida em `package.json`.
 - Para outra versão, edite o script ou rode:
-  `node tools/build.mjs --cdn=https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1`
+  `node tools/build.mjs --cdn=https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.2`
 - Confirme que o build terminou com `build OK` e que nenhum budget foi excedido
   (embed < 80 KB; CSS gzip < 40 KB; JS gzip < 30 KB).
 - O artefato para colar é um dos 8 `dist/embed-*.html` (recomendado) ou `dist/embed.html` (único).
@@ -55,7 +57,7 @@ npm run sri
 ### 3. Criar a tag `v1.0.1`
 
 ```bash
-git tag -a v1.0.1 -m "release v1.0.1"
+git tag -a v1.0.2 -m "release v1.0.2"
 ```
 
 - A tag deve apontar para o commit exato que gerou o `dist/` publicado.
@@ -66,7 +68,7 @@ git tag -a v1.0.1 -m "release v1.0.1"
 
 ```bash
 git push origin main
-git push origin v1.0.1
+git push origin v1.0.2
 ```
 
 - Nunca use force-push em `main`.
@@ -79,9 +81,9 @@ O jsDelivr pode levar alguns minutos para indexar a tag recém-criada (404 inici
 Valide os arquivos com a tag exata:
 
 ```text
-https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1/dist/main.min.css
-https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1/dist/main.min.js
-https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1/assets/svg/logo.svg
+https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.2/dist/main.min.css
+https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.2/dist/main.min.js
+https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.2/assets/svg/logo.svg
 ```
 
 - Compare os hashes de `dist/integrity.json` com os arquivos servidos (o SRI usa os bytes

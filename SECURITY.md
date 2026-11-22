@@ -71,13 +71,16 @@ tratar o reporte conforme a gravidade. Não há SLA contratual nem recompensa fi
   scripts/styles/fontes/imagens apenas de `'self'` + jsDelivr, `object-src 'none'`,
   `base-uri 'none'`, `form-action 'none'`. A `meta` CSP depende de o Google Sites preservá-la; o
   spike de publicação ainda precisa confirmar (sem `frame-ancestors`, que não funciona em `meta`).
+  A partir da v1.0.2, o único `<style>` inline é o **boot loader**, liberado por hash `sha256` no
+  `style-src`; o hash é calculado pelo build e conferido pelo `check`.
 - **Embeds por seção sem chrome global:** os 8 `embed-*.html` contêm apenas o sprite de ícones, a
   seção correspondente e `<main id="conteudo">`; header, FAB, CTA mobile, banner de cookies e modal
   são removidos pelo build e barrados por `npm run check`.
 - **Zero inline implementado:** `src/index.html` não tem `style=""`, handlers `onerror` nem scripts
   inline; `src/js` não usa `innerHTML`; `src/` e `tools/` não referenciam `raw.githubusercontent.com`
-  nem `@main`. O build remove `<title>`, meta de SEO, OG/Twitter, canonical, favicon e JSON-LD do
-  embed. Assets ficam em `assets/` (WebP-only nos prints); JPGs de captura em
+  nem `@main`. A exceção é o `<style>` do boot loader, injetado no build e coberto por hash CSP
+  (sem `'unsafe-inline'`). O build remove `<title>`, meta de SEO, OG/Twitter, canonical, favicon e
+  JSON-LD do embed. Assets ficam em `assets/` (WebP-only nos prints); JPGs de captura em
   `tools/archive/prints-jpg/`, fora do deploy.
 - **Dependências pinadas** (versões exatas em `package.json` + `package-lock.json`, instaladas com
   `npm ci`). Nenhuma dependência de runtime no site publicado.
@@ -96,7 +99,8 @@ tratar o reporte conforme a gravidade. Não há SLA contratual nem recompensa fi
 - A página publicada é servida pelo Google. **Não é possível controlar headers** como HSTS,
   `X-Frame-Options`, `X-Content-Type-Options` ou uma CSP de resposta real.
 - Uma `meta` CSP dentro do iframe pode ser removida/ignorada pelo Google Sites. Se isso ocorrer,
-  não há CSP efetiva no embed; restam SRI, zero inline, URLs fixas e sanitização de URLs.
+  não há CSP efetiva no embed; restam SRI, zero inline, o loader hasheado, URLs fixas e sanitização
+  de URLs.
 - O embed precisa ser enquadrável (sem `frame-ancestors`/anti-framing), pois roda dentro do iframe
   do Sites.
 - Analytics de terceiros (GA4/Meta) é desligado por padrão, não suporta SRI e, se ativado, amplia a

@@ -14,6 +14,7 @@ Todos os números foram medidos localmente; o spike no Google Sites ainda não f
 | Embeds por seção | não existiam | 8 arquivos (8,9–14,3 KB) | ✅ |
 | Covers SVG | inline/blobs | 8 externos, 4,7–5,0 KB | ✅ <6 KB |
 | `style=""` / `onerror` / scripts inline | 27 styles, 1 onerror | 0 / 0 / 0 | ✅ |
+| `<style>` inline | 0 | 1 hasheado (boot loader) | ✅ CSP |
 | `innerHTML` em `src/js` | 3 | 0 (`svgNode` + `<template>`) | ✅ |
 | URLs raw/`@main` | 13 raw + `@main` | 0 | ✅ |
 | Fontes <12px | ~40 seletores | 0 (auditoria Playwright) | ✅ |
@@ -26,7 +27,7 @@ Todos os números foram medidos localmente; o spike no Google Sites ainda não f
 | Links das 68 demos | — | 68/68 HTTP 200 | ✅ |
 | Alturas medidas | — | 8 seções × 3 viewports, diferença ≤2 px | ✅ |
 | SRI | — | `sha384` em CSS/JS, `crossorigin=anonymous` | ✅ |
-| CSP | — | meta sem `'unsafe-inline'` nos 9 embeds | ✅ local |
+| CSP | — | meta sem `'unsafe-inline'` nos 9 embeds; hash sha256 do boot loader | ✅ local |
 | Copy/IDs | — | `freeze OK` 94 ids / 11 seções | ✅ |
 | Prova social falsa | — | nenhum texto proibido no `check` | ✅ |
 
@@ -79,6 +80,17 @@ absoluto em `...@v1.0.1/assets/`, CSS/JS com `integrity` igual a `dist/integrity
 zero `../assets`, zero raw/`@main`. Os artefatos prontos para colar estão em `release/v1.0.1/`
 (ignorada pelo git) e foram testados no Edge carregando CSS/JS/assets reais do jsDelivr, com console
 limpo. O `dist/` local foi restaurado (`npm run build`) e o `check` segue OK.
+
+## v1.0.2 — boot loader inline
+
+- Os 9 embeds têm **1 `<style data-mlcs-boot>`**; o hash sha256 do conteúdo confere com o
+  `style-src` da meta CSP. Nada de `'unsafe-inline'`.
+- Com o CSS bloqueado/atrasado, o loader cobre o HTML cru; com o app pronto, `html.is-ready`
+  esconde o loader. Sem JS, o fallback inline o esconde em 8 s.
+- Testes Playwright em 390/1440 (single + `embed-nichos-modelos`): console limpo no caminho normal,
+  `#catalogGrid` com 68 cards após o boot, loader `visibility:hidden/opacity:0`.
+- Tamanhos: `embed.html` 50,9 KB; seções 12,3–17,7 KB; CSS gzip 15,7 KB; JS gzip 16,3 KB.
+- Alturas (`heights.json`) inalteradas: o loader é `position:fixed`.
 
 ## Veredito
 

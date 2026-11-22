@@ -7,6 +7,8 @@ import { bindTilt, initConsent, initHeader, initHeroCanvas, initHeroParallax, in
 import { initCatalogControls, initModal, renderCatalog, renderTabs } from "./catalog.js";
 import { renderFeatured, renderNiches, renderPlans, renderUrgency } from "./sections.js";
 // ===== 25 · INICIALIZAÇÃO =====
+// O loader inline (#mlcs-boot) só some depois que catálogo/seções foram montados.
+const markReady = () => document.documentElement.classList.add("is-ready");
 // Modo seção: o embed vive num iframe sem chrome global (header/FAB/scroll UI).
 // Mantém catálogo/seções, reveals, links legais, modal (auto-bloqueado) e
 // tilt/ripple/magnetic (interações de ponteiro que funcionam no iframe).
@@ -37,12 +39,13 @@ export function init() {
     initRipple();
     initMagnetic();
     initTimeline();
-    if (sectionMode) return;
+    if (sectionMode) { markReady(); return; }
     initMobileCta();
     initScrollUI();
     initHeroCanvas();
     initHeroParallax();
     initSectionPause();
+    markReady();
   };
   const runDeferred = () => {
     if (deferredDone) return;

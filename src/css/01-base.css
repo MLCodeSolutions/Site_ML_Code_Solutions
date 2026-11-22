@@ -85,3 +85,12 @@ ul,ol{margin:0; padding:0; list-style:none}
 @keyframes floatY{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-14px,0)}}
 @keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 color-mix(in oklab, var(--neon-1) 40%, transparent)}70%{box-shadow:0 0 0 18px transparent}}
 @keyframes shineSweep{0%{transform:translateX(-140%) skewX(-18deg)}100%{transform:translateX(240%) skewX(-18deg)}}
+
+/* Boot loader: escondido quando o app terminou de montar (src/js/boot.js). */
+html.is-ready #mlcs-boot{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  animation:none!important;
+}
+html.is-ready #mlcs-boot *{animation:none!important}

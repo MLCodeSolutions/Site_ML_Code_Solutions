@@ -104,6 +104,30 @@ const htmlTag = dataBase
   ? `<html lang="pt-BR" class="js" data-base="${dataBase}">`
   : `<html lang="pt-BR" class="js">`;
 
+// ---------- Boot loader inline ----------
+// Fica dentro do HTML para cobrir o primeiro paint (antes do CSS externo).
+// E injetado depois da minificacao; o hash sha256 libera exatamente este <style> na CSP.
+const BOOT_CSS = `
+#mlcs-boot{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;overscroll-behavior:contain;background:radial-gradient(620px 420px at 50% 38%,rgba(168,85,247,.18),transparent 70%),radial-gradient(380px 280px at 50% 62%,rgba(232,121,249,.08),transparent 70%),#07030f;color:#f5edff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;transition:opacity .28s ease,visibility 0s .28s;animation:mlcs-boot-fallback .3s ease 8s forwards}
+#mlcs-boot::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(168,85,247,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(168,85,247,.06) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(70% 60% at 50% 50%,#000 30%,transparent 80%);mask-image:radial-gradient(70% 60% at 50% 50%,#000 30%,transparent 80%);pointer-events:none}
+#mlcs-boot .mlcs-boot-inner{display:flex;flex-direction:column;align-items:center;gap:18px;transform:translateY(-2px)}
+#mlcs-boot .mlcs-boot-mark{position:relative;display:grid;place-items:center;width:88px;height:88px;border-radius:50%;background:linear-gradient(150deg,rgba(168,85,247,.16),rgba(232,121,249,.06));border:1px solid rgba(168,85,247,.28);box-shadow:0 0 50px rgba(168,85,247,.22),inset 0 0 30px rgba(168,85,247,.08)}
+#mlcs-boot .mlcs-boot-mark span{font-size:30px;font-weight:800;letter-spacing:-.06em;background:linear-gradient(100deg,#c084fc,#e879f9);-webkit-background-clip:text;background-clip:text;color:transparent;animation:mlcs-boot-pulse 2.4s ease-in-out infinite}
+#mlcs-boot .mlcs-boot-ring{position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(168,85,247,.14);border-top-color:#a855f7;border-right-color:#e879f9;animation:mlcs-boot-spin 1.1s linear infinite}
+#mlcs-boot .mlcs-boot-ring::after{content:"";position:absolute;top:-4px;left:50%;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#e879f9;box-shadow:0 0 12px #e879f9}
+#mlcs-boot .mlcs-boot-text{margin:0;font-size:16px;font-weight:600;letter-spacing:.02em;color:#e9ddff}
+#mlcs-boot .mlcs-boot-dots{display:inline-block;width:1.4em;text-align:left;animation:mlcs-boot-dots 1.4s steps(4,end) infinite}
+#mlcs-boot .mlcs-boot-brand{font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:#b9a8d4}
+@keyframes mlcs-boot-spin{to{transform:rotate(360deg)}}
+@keyframes mlcs-boot-pulse{0%,100%{opacity:.82;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
+@keyframes mlcs-boot-dots{0%{clip-path:inset(0 100% 0 0)}25%{clip-path:inset(0 75% 0 0)}50%{clip-path:inset(0 50% 0 0)}75%{clip-path:inset(0 25% 0 0)}100%{clip-path:inset(0 0 0 0)}}
+@keyframes mlcs-boot-fallback{to{opacity:0;visibility:hidden;pointer-events:none}}
+@media (prefers-reduced-motion:reduce){#mlcs-boot .mlcs-boot-mark span,#mlcs-boot .mlcs-boot-ring,#mlcs-boot .mlcs-boot-dots{animation:none!important}#mlcs-boot .mlcs-boot-dots{clip-path:none}}
+`;
+const BOOT_HTML = `<div id="mlcs-boot" role="status" aria-live="polite" aria-label="Carregando o site"><div class="mlcs-boot-inner"><div class="mlcs-boot-mark" aria-hidden="true"><span>ML</span><i class="mlcs-boot-ring"></i></div><p class="mlcs-boot-text">Carregando<span class="mlcs-boot-dots" aria-hidden="true">...</span></p><small class="mlcs-boot-brand">ML Code Solutions</small></div></div>`;
+const bootHash = "sha256-" + crypto.createHash("sha256").update(BOOT_CSS).digest("base64");
+const BOOT_STYLE = `<style data-mlcs-boot>${BOOT_CSS}</style>`;
+
 const minify = async (html) => {
   const out = await htmlMinify(html, {
     collapseWhitespace: true,
@@ -145,6 +169,17 @@ function swapAssetTags(html) {
   return html
     .replace('<link rel="stylesheet" href="css/main.css">', cssTag)
     .replace('<script type="module" src="js/main.js"></script>', jsTag);
+}
+
+// Injetado depois do minify para o hash bater exatamente com o <style> final.
+function injectBoot(html) {
+  const needle = "style-src 'self' https://cdn.jsdelivr.net";
+  if (!html.includes(needle)) throw new Error("style-src nao encontrado para o loader");
+  if (!html.includes("</head>")) throw new Error("head nao encontrado para o loader");
+  if (!/<body[^>]*>/.test(html)) throw new Error("body nao encontrado para o loader");
+  html = html.replace(needle, `${needle} '${bootHash}'`);
+  html = html.replace("</head>", `${BOOT_STYLE}\n</head>`);
+  return html.replace(/<body([^>]*)>/, `<body$1>${BOOT_HTML}`);
 }
 
 function stripStars(html) {
@@ -218,7 +253,7 @@ ${blocks}
 ${jsTag}
 </body>
 </html>`;
-  return await minify(toBase(html));
+  return injectBoot(await minify(toBase(html)));
 }
 
 // ---------- HTML: embed unico (compatibilidade) ----------
@@ -230,7 +265,7 @@ async function buildSingleEmbed() {
   html = toBase(html);
   html = injectCsp(html);
   html = swapAssetTags(html);
-  return await minify(html);
+  return injectBoot(await minify(html));
 }
 
 // ---------- Escreve os HTML ----------

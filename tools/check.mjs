@@ -1,5 +1,6 @@
 ﻿import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { transformSync } from "esbuild";
 
@@ -9,6 +10,20 @@ const notes = [];
 
 const read = (rel) => fs.readFileSync(path.join(root, rel), "utf8");
 const exists = (rel) => fs.existsSync(path.join(root, rel));
+const bootHash = (css) => "sha256-" + crypto.createHash("sha256").update(css).digest("base64");
+function checkBoot(embed, rel) {
+  const styles = [...embed.matchAll(/<style\b([^>]*)>([\s\S]*?)<\/style>/gi)];
+  if (styles.length !== 1) {
+    problems.push(rel + ": esperado 1 <style> do loader, encontrado " + styles.length);
+    return;
+  }
+  const [, attrs, css] = styles[0];
+  if (!/data-mlcs-boot/.test(attrs)) problems.push(rel + ": <style> sem data-mlcs-boot");
+  const csp = embed.match(/http-equiv="Content-Security-Policy" content="([^"]*)"/);
+  if (!csp) problems.push(rel + ": sem meta CSP");
+  else if (!csp[1].includes(`'${bootHash(css)}'`)) problems.push(rel + ": hash do loader ausente na CSP");
+  if (!embed.includes('id="mlcs-boot"')) problems.push(rel + ": loader ausente (id=mlcs-boot)");
+}
 
 const html = read("src/index.html");
 const jsDir = path.join(root, "src", "js");
@@ -130,10 +145,10 @@ if (exists("dist/embed.html")) {
   const embed = read("dist/embed.html");
   if (/<title>/i.test(embed)) problems.push("dist/embed.html ainda tem <title>");
   if (/application\/ld\+json/.test(embed)) problems.push("dist/embed.html ainda tem JSON-LD");
-  if (/<style[\s>]/i.test(embed)) problems.push("dist/embed.html tem CSS inline");
   if (!/integrity="sha384-/.test(embed)) problems.push("dist/embed.html sem SRI");
   if (!/http-equiv="Content-Security-Policy"/.test(embed)) problems.push("dist/embed.html sem meta CSP");
   if (!/data-embed-mode="single"/.test(embed)) problems.push("dist/embed.html sem data-embed-mode=single");
+  checkBoot(embed, "dist/embed.html");
   notes.push('dist/embed.html: ' + (Buffer.byteLength(embed) / 1024).toFixed(1) + " KB");
 }
 
@@ -151,11 +166,16 @@ for (const [file, section] of SECTION_EMBEDS) {
   if (!/<link rel="preload"[^>]*as="font"/.test(embed)) problems.push(rel + " sem preload de fonte");
   if (/<title>/i.test(embed)) problems.push(rel + " ainda tem <title>");
   if (/application\/ld\+json/.test(embed)) problems.push(rel + " ainda tem JSON-LD");
-  if (/<style[\s>]/i.test(embed)) problems.push(rel + " tem CSS inline");
+  checkBoot(embed, rel);
   for (const chrome of CHROME_FORBIDDEN) {
     if (embed.includes(chrome)) problems.push(rel + " tem chrome proibido: " + chrome);
   }
   notes.push(rel + ": " + (Buffer.byteLength(embed) / 1024).toFixed(1) + " KB");
+}
+
+if (exists("dist/main.min.css")) {
+  const css = read("dist/main.min.css");
+  if (!css.includes("is-ready") || !css.includes("mlcs-boot")) problems.push("dist/main.min.css sem a regra do boot loader");
 }
 
 if (!exists("dist/heights.json")) {
