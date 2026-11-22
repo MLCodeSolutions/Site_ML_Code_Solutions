@@ -5,7 +5,8 @@ com tag imutável.
 
 > **Estado atual (2026-11-22):** Fases 0–5 concluídas. Assets em `assets/`, zero
 > inline/`innerHTML`, URLs fixas, SRI + CSP (meta injetada pelo build) e os **8 embeds por seção**
-> gerados em `dist/` (`embed-hero.html` … `embed-contato.html`). `npm run heights` grava
+> gerados em `dist/` (`embed-hero.html` … `embed-contato.html`). O catálogo usa carrossel de
+> **1 card por vez no mobile**, 2 no tablet e 3 no desktop. `npm run heights` grava
 > `dist/heights.json` (390/768/1440) e imprime a tabela de alturas abaixo. `dist/embed.html`
 > (embed único) continua sendo gerado para compatibilidade/contingência.
 
@@ -34,7 +35,7 @@ npm run freeze
 npm run sri
 ```
 
-- `build:release` usa por padrão a tag `v1.0.0` definida em `package.json`.
+- `build:release` usa por padrão a tag `v1.0.1` definida em `package.json`.
 - Para outra versão, edite o script ou rode:
   `node tools/build.mjs --cdn=https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1`
 - Confirme que o build terminou com `build OK` e que nenhum budget foi excedido
@@ -51,10 +52,10 @@ npm run sri
 - Nunca commite `node_modules/`, `index.backup-*.html`, planilhas locais, tokens ou segredos.
 - Verifique com `git status` e `git diff --stat` antes de commitar.
 
-### 3. Criar a tag `v1.0.0`
+### 3. Criar a tag `v1.0.1`
 
 ```bash
-git tag -a v1.0.0 -m "release v1.0.0"
+git tag -a v1.0.1 -m "release v1.0.1"
 ```
 
 - A tag deve apontar para o commit exato que gerou o `dist/` publicado.
@@ -65,7 +66,7 @@ git tag -a v1.0.0 -m "release v1.0.0"
 
 ```bash
 git push origin main
-git push origin v1.0.0
+git push origin v1.0.1
 ```
 
 - Nunca use force-push em `main`.
@@ -78,9 +79,9 @@ O jsDelivr pode levar alguns minutos para indexar a tag recém-criada (404 inici
 Valide os arquivos com a tag exata:
 
 ```text
-https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.0/dist/main.min.css
-https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.0/dist/main.min.js
-https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.0/assets/svg/logo.svg
+https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1/dist/main.min.css
+https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1/dist/main.min.js
+https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1/assets/svg/logo.svg
 ```
 
 - Compare os hashes de `dist/integrity.json` com os arquivos servidos (o SRI usa os bytes
@@ -194,7 +195,7 @@ Alturas reais do conteúdo, sem scroll interno, medidas com `npm run heights` (P
 | Problema (`embed-problema`) | 1767 | 1081 | 1065 |
 | Serviços (`embed-servicos`) | 2157 | 1409 | 1368 |
 | Processo (`embed-processo`) | 1195 | 1046 | 1075 |
-| Nichos + modelos (`embed-nichos-modelos`) | 2783 | 3535 | 3428 |
+| Nichos + modelos (`embed-nichos-modelos`) | 2899 | 3667 | 3564 |
 | Planos (`embed-planos`) | 2650 | 1914 | 1996 |
 | Sobre + FAQ (`embed-sobre-faq`) | 2188 | 2027 | 2149 |
 | Contato + legal (`embed-contato`) | 2224 | 1863 | 2040 |

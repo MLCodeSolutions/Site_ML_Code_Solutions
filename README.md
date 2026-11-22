@@ -6,7 +6,7 @@ publicado por GitHub Pages: a página vive no Google Sites, e o HTML/CSS/JS e os
 repositório por meio do **jsDelivr com tag imutável**.
 
 O Google Sites não serve arquivos relativos nem aceita `src`/`href` relativos dentro do embed.
-Por isso o build de produção injeta URLs absolutas do jsDelivr (`@v1.0.0`) com **SRI (sha384)** e
+Por isso o build de produção injeta URLs absolutas do jsDelivr (`@v1.0.1`) com **SRI (sha384)** e
 gera um HTML pronto para colar no bloco de código incorporado.
 
 > **Estado atual (2026-11-22):** Fases 0–5 concluídas. Assets em `assets/`, zero
@@ -24,9 +24,9 @@ gera um HTML pronto para colar no bloco de código incorporado.
 Google Sites (documento publicado)
 └── bloco "Código incorporado" (iframe)
     └── dist/embed-*.html  (8 embeds por seção)
-        ├── <link> main.min.css   → https://cdn.jsdelivr.net/gh/...@v1.0.0/dist/main.min.css
-        ├── <script> main.min.js  → https://cdn.jsdelivr.net/gh/...@v1.0.0/dist/main.min.js
-        └── imagens/fontes/SVG    → https://cdn.jsdelivr.net/gh/...@v1.0.0/assets/...
+        ├── <link> main.min.css   → https://cdn.jsdelivr.net/gh/...@v1.0.1/dist/main.min.css
+        ├── <script> main.min.js  → https://cdn.jsdelivr.net/gh/...@v1.0.1/dist/main.min.js
+        └── imagens/fontes/SVG    → https://cdn.jsdelivr.net/gh/...@v1.0.1/assets/...
 ```
 
 - **Fonte única:** `src/index.html` + `src/css/*` + `src/js/*`. Nunca edite arquivos em `dist/`;
@@ -134,7 +134,7 @@ A mudança para `assets/` foi feita na **Fase 3**. A fonte usa `../assets/...`; 
 |---|---|
 | `npm ci` | Instala as dependências exatas do lockfile (CI e máquina limpa). |
 | `npm run build` | Gera `dist/main.min.css`, `dist/main.min.js`, `dist/integrity.json`, `dist/embed.html` e os 8 `dist/embed-*.html` com URLs **relativas** (preview local). Aplica os budgets (cada embed < 80 KB; CSS gzip < 40 KB; JS gzip < 30 KB). |
-| `npm run build:release` | Mesmo build, mas injeta URLs absolutas do jsDelivr com a tag `v1.0.0` (`--cdn=...@v1.0.0`) e SRI. Gera os 9 HTML (único + 8 seções) que vão para o Google Sites. |
+| `npm run build:release` | Mesmo build, mas injeta URLs absolutas do jsDelivr com a tag `v1.0.1` (`--cdn=...@v1.0.1`) e SRI. Gera os 9 HTML (único + 8 seções) que vão para o Google Sites. |
 | `npm run freeze` | Verifica se IDs, ordem de seções e copy continuam iguais ao baseline (`tools/freeze.json`). Falha em mudança não autorizada. |
 | `npm run freeze -- --update` | Atualiza o baseline **somente** depois de uma mudança de copy aprovada. |
 | `npm run check` | Valida sintaxe dos módulos JS, ausência de `<style>` inline, zero `style=""`/`onerror`/`innerHTML`, URLs `raw`/`@main`, JSON-LD, textos proibidos, 68 modelos/URLs únicas, prints WebP 600/1200, fontes, IDs duplicados, SVGs (viewBox, tamanho, reduced-motion), os 8 embeds (chrome proibido, CSP/SRI/preload) e `dist/heights.json` (8 seções x 3 viewports). |
@@ -154,7 +154,7 @@ npm run freeze
 npm run sri
 ```
 
-> O `build:release` atual usa a tag fixa `v1.0.0` dentro do `package.json`. Para outra release,
+> O `build:release` atual usa a tag fixa `v1.0.1` dentro do `package.json`. Para outra release,
 > edite o script ou rode diretamente:
 > `node tools/build.mjs --cdn=https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1`
 
@@ -212,7 +212,7 @@ Ao adicionar um modelo:
   vazios/selo/loading e `cta-aurora.svg`.
 - `assets/img/og-1200x630.jpg`: imagem de compartilhamento usada pelo Google Sites.
 - `tools/archive/prints-jpg/`: 68 JPG de captura/regeneração, fora do deploy.
-- `BASE_URL` em `<html data-base="https://cdn.jsdelivr.net/gh/...@v1.0.0/assets/">`; o JS lê
+- `BASE_URL` em `<html data-base="https://cdn.jsdelivr.net/gh/...@v1.0.1/assets/">`; o JS lê
   `document.documentElement.dataset.base` e a fonte local usa `../assets/`.
 
 > **SVG externo e CSS:** um SVG carregado via `<img>` **não herda** variáveis CSS da página.
@@ -244,7 +244,7 @@ Regras de tag:
 - Se o CSS/JS mudar, o hash muda; **todos** os embeds precisam ser recolados com a nova tag/SRI.
 - O jsDelivr pode levar alguns minutos para indexar uma tag recém-criada (404 inicial é normal).
 - Valide antes de publicar:
-  `https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.0/dist/main.min.css`
+  `https://cdn.jsdelivr.net/gh/MLCodeSolutions/Site_ML_Code_Solutions@v1.0.1/dist/main.min.css`
   e o equivalente `.../main.min.js`.
 
 ---

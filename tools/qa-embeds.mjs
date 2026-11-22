@@ -80,6 +80,14 @@ async function settle(page) {
       }
       scroller.scrollLeft = 0;
     }
+    for (const scroller of document.querySelectorAll(".catalog-grid:not(.is-empty)")) {
+      const step = Math.max(320, scroller.clientWidth);
+      for (let left = 0; left <= scroller.scrollWidth; left += step) {
+        scroller.scrollLeft = left;
+        await new Promise((resolve) => setTimeout(resolve, 90));
+      }
+      scroller.scrollLeft = 0;
+    }
     window.scrollTo(0, 0);
   });
   await page.waitForLoadState("networkidle").catch(() => {});
@@ -142,39 +150,65 @@ async function baseChecks(page, label, sectionKey) {
   }
 }
 
-async function testCatalog(page, label, perPage, single) {
+async function testCatalog(page, label, perView, single) {
   const count = await page.locator("#catalogGrid .model-cell").count();
-  check(label + " catalogo pagina 1", count === perPage, `esperado ${perPage}, obtido ${count}`);
+  check(label + " catalogo completo", count === 68, `esperado 68, obtido ${count}`);
+
+  const layout = await page.evaluate(() => {
+    const grid = document.querySelector("#catalogGrid");
+    const cell = grid.querySelector(".model-cell");
+    return {
+      perView: grid.clientWidth / cell.getBoundingClientRect().width,
+      dots: document.querySelectorAll(".catalog-dot").length,
+      bar: Boolean(document.querySelector(".catalog-bar span")),
+      label: document.querySelector("#catalogPageLabel").textContent.replace(/\s+/g, " ").trim(),
+      role: grid.getAttribute("aria-roledescription"),
+      tabindex: grid.getAttribute("tabindex"),
+    };
+  });
+  check(label + " 1/2/3 por vez", Math.abs(layout.perView - perView) < 0.2, `esperado ${perView}, obtido ${layout.perView.toFixed(2)}`);
+  check(label + " sem dots", layout.dots === 0, String(layout.dots));
+  check(label + " barra de progresso", layout.bar, "ausente");
+  check(label + " label do carrossel", /de 68$/.test(layout.label), layout.label);
+  check(label + " a11y do carrossel", layout.role === "carrossel" && layout.tabindex === "0", JSON.stringify(layout));
 
   const next = page.locator("#catalogNext");
   if (await next.isVisible()) {
+    const before = await page.evaluate(() => document.querySelector("#catalogGrid").scrollLeft);
     await next.click();
-    await page.waitForTimeout(250);
-    const page2 = await page.locator("#catalogGrid .model-cell").count();
-    check(label + " catalogo proxima pagina", page2 === perPage, `esperado ${perPage}, obtido ${page2}`);
+    await page.waitForTimeout(700);
+    const after = await page.evaluate(() => ({
+      left: document.querySelector("#catalogGrid").scrollLeft,
+      label: document.querySelector("#catalogPageLabel").textContent.replace(/\s+/g, " ").trim(),
+    }));
+    check(label + " proximo modelo", after.left > before, `${before} -> ${after.left}`);
+    check(label + " label avanca", after.label !== layout.label, `${layout.label} -> ${after.label}`);
     await page.locator("#catalogPrev").click();
-    await page.waitForTimeout(250);
+    await page.waitForTimeout(700);
+    const back = await page.evaluate(() => document.querySelector("#catalogGrid").scrollLeft);
+    check(label + " modelo anterior", back <= before + 1, `${after.left} -> ${back}`);
   }
 
   const tabs = page.locator("#catalogTabs .tab");
   const tabCount = await tabs.count();
   if (tabCount > 1) {
     await tabs.nth(1).click();
-    await page.waitForTimeout(250);
+    await page.waitForTimeout(350);
     const filtered = await page.locator("#catalogGrid .model-cell").count();
-    check(label + " filtro por nicho", filtered > 0 && filtered <= perPage, `obtido ${filtered}`);
+    const filteredLabel = await page.locator("#catalogPageLabel").innerText();
+    check(label + " filtro por nicho", filtered > 0 && filtered < 68 && filteredLabel.includes("de " + filtered), `${filtered} :: ${filteredLabel}`);
     await page.locator('#catalogTabs .tab[data-nicho="Todos"]').click();
-    await page.waitForTimeout(250);
+    await page.waitForTimeout(350);
   }
 
   const search = page.locator("#catalogSearch");
   await search.fill("casa");
-  await page.waitForTimeout(350);
+  await page.waitForTimeout(400);
   const searchCount = await page.locator("#catalogGrid .model-cell").count();
   const countText = await page.locator("#catalogCount").innerText();
-  check(label + " busca", searchCount > 0 && searchCount <= perPage && /encontrado/i.test(countText), `${searchCount} :: ${countText}`);
+  check(label + " busca", searchCount > 0 && searchCount < 68 && /encontrado/i.test(countText), `${searchCount} :: ${countText}`);
   await page.locator("#clearSearch").click();
-  await page.waitForTimeout(350);
+  await page.waitForTimeout(400);
   const restored = await page.locator("#catalogCount").innerText();
   check(label + " busca limpa", /68 modelos prontos/.test(restored), restored);
 
@@ -228,8 +262,8 @@ async function testContact(page, label) {
 
 async function testSingleCatalog(page, label, width) {
   // No single o catalogo profundo fica abaixo; ainda assim o modal deve funcionar.
-  const perPage = width >= 1024 ? 6 : width >= 700 ? 4 : 3;
-  await testCatalog(page, label, perPage, true);
+  const perView = width >= 1024 ? 3 : width >= 700 ? 2 : 1;
+  await testCatalog(page, label, perView, true);
 }
 
 const { server, port } = await startServer();
@@ -259,8 +293,8 @@ try {
       check(label + " somente a secao", extra.length === 0, "extras: " + extra.join(","));
 
       if (section.key === "nichos-modelos") {
-        const perPage = viewport.width >= 1024 ? 6 : viewport.width >= 700 ? 4 : 3;
-        await testCatalog(page, label, perPage, false);
+        const perView = viewport.width >= 1024 ? 3 : viewport.width >= 700 ? 2 : 1;
+        await testCatalog(page, label, perView, false);
       }
       if (section.key === "sobre-faq") await testFaq(page, label);
       if (section.key === "contato") await testContact(page, label);

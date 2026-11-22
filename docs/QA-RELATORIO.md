@@ -1,4 +1,4 @@
-# Relatório de QA — v1.0.0 (pré-publicação)
+# Relatório de QA — v1.0.1 (pré-publicação)
 
 Data: 2026-11-22 · commits `4c1f1d1`, `52aa972`, `af43ca7`, `6336aa3`.
 Ambiente: Windows, Edge (Playwright), servidor HTTP local, `reducedMotion: reduce`.
@@ -17,7 +17,7 @@ Todos os números foram medidos localmente; o spike no Google Sites ainda não f
 | `innerHTML` em `src/js` | 3 | 0 (`svgNode` + `<template>`) | ✅ |
 | URLs raw/`@main` | 13 raw + `@main` | 0 | ✅ |
 | Fontes <12px | ~40 seletores | 0 (auditoria Playwright) | ✅ |
-| Catálogo | carrossel de 3 páginas | grid 6/4/3, página atual no DOM | ✅ |
+| Catálogo | carrossel de 3 páginas (3-up) | carrossel 1/2/3 por vez (mobile/tablet/desktop), swipe + setas + barra | ✅ |
 | Cards | alturas variadas | uniformes, descrição 2 linhas | ✅ |
 | CSS/código morto | preloader, film-grain, cta-orb/orbit, duplicatas | removido | ✅ |
 | Chrome no modo seção | header/FAB/mobile CTA/modal | ausente (CSS + guards JS) | ✅ |
@@ -49,7 +49,7 @@ npm run qa:embeds   # 27 carregamentos no Edge (8 embeds + único x 3 viewports)
 | Problema | 1767 | 1081 | 1065 |
 | Serviços | 2157 | 1409 | 1368 |
 | Processo | 1195 | 1046 | 1075 |
-| Nichos + modelos | 2783 | 3535 | 3428 |
+| Nichos + modelos | 2899 | 3667 | 3564 |
 | Planos | 2650 | 1914 | 1996 |
 | Sobre + FAQ | 2188 | 2027 | 2149 |
 | Contato + legal | 2224 | 1863 | 2040 |
@@ -62,26 +62,27 @@ Copie o valor correspondente para o campo “altura” do bloco de código incor
 1. **Spike no Google Sites**: confirmar se a `meta` CSP e o SRI sobrevivem ao bloco “Código
    incorporado” e se os 8 iframes respeitam as alturas. Sem isso, não há como validar
    CSP/SRI/PageSpeed reais.
-2. **Push/tag resolvidos**: `main` e a tag `v1.0.0` foram publicados (commit `382b499`; `d214682`
-   depois). O jsDelivr indexou a tag: CSS/JS/assets/heights retornam 200 e o sha384 confere com
-   `integrity.json`; CI verde em `main` e nos PRs do Dependabot.
+2. **Push/tag resolvidos**: `main` e as tags `v1.0.0` (commit `382b499`) e `v1.0.1` (catálogo em
+   carrossel) estão publicados. O jsDelivr indexa as tags: CSS/JS/assets/heights retornam 200 e o
+   sha384 confere com `integrity.json`; CI verde em `main` e nos PRs do Dependabot.
 3. **PageSpeed/Lighthouse** na URL publicada (mobile/desktop) — depende do item 1.
 4. **axe/WAVE** externos não foram executados (não instalados); foco, contraste, alvos e
-   reduced-motion foram verificados via Playwright. Dots de paginação ficam com 24 px (WCAG 2.5.8 AA,
-   não 44 px) para não quebrar a barra com 23 páginas no mobile.
+   reduced-motion foram verificados via Playwright. O carrossel não usa dots: tem setas 44 px, swipe e
+   barra de progresso, com label “Modelo X de 68”.
 5. **SEO nativo do Sites** (nome, título, descrição, favicon, URL, imagem) é configurado no Google
    Sites, não no embed — ver `docs/PUBLICAR.md`.
 
-## Release v1.0.0 publicada
+## Release v1.0.1 publicada
 
-`npm run build:release` foi executado com a tag `v1.0.0` e os 9 HTML foram verificados: `data-base`
-absoluto em `...@v1.0.0/assets/`, CSS/JS com `integrity` igual a `dist/integrity.json`, CSP presente,
-zero `../assets`, zero raw/`@main`. Os artefatos prontos para colar estão em `release/v1.0.0/`
+`npm run build:release` foi executado com a tag `v1.0.1` e os 9 HTML foram verificados: `data-base`
+absoluto em `...@v1.0.1/assets/`, CSS/JS com `integrity` igual a `dist/integrity.json`, CSP presente,
+zero `../assets`, zero raw/`@main`. Os artefatos prontos para colar estão em `release/v1.0.1/`
 (ignorada pelo git) e foram testados no Edge carregando CSS/JS/assets reais do jsDelivr, com console
 limpo. O `dist/` local foi restaurado (`npm run build`) e o `check` segue OK.
 
 ## Veredito
 
-Código, build e release **v1.0.0**: **GO** (tag publicada, jsDelivr + SRI + CI validados).
+Código, build e release **v1.0.1**: **GO** (tag publicada, jsDelivr + SRI + CI validados). A
+`v1.0.0` continua imutável; use a `v1.0.1` (catálogo em carrossel) nos novos embeds.
 Falta apenas a publicação no Google Sites: spike de CSP/SRI/altura (item 1) e PageSpeed na URL
 publicada (item 3), ambos com ação manual no Google Sites.

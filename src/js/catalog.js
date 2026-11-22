@@ -5,11 +5,11 @@
 import { CONFIG } from "./config.js";
 import { SITES, nicheMeta } from "./data.js";
 import { $, $$, assetUrl, attachShot, domainOf, icon, lite, make, normalizeText, reduced, safeUrl, svgNode, waLink } from "./util.js";
-import { bindTilt, observeReveals, trackEvent } from "./ui.js";
+import { observeReveals, trackEvent } from "./ui.js";
 // ===== 11 · CAPAS DO CATÁLOGO (SVG) =====
 // ===== 12 · CATÁLOGO (ENGINE) =====
 export const catalogState = { nicho: "Todos", query: "" };
-export const catalogView = { page: 0, pages: 1, perPage: 6 };
+export const catalogView = { index: 0, page: 0, pages: 1, perView: 3, perPage: 3, total: 0 };
 export const catalogGrid = $("#catalogGrid");
 export const catalogNav = $("#catalogNav");
 export const catalogPrev = $("#catalogPrev");
@@ -56,8 +56,8 @@ export function selectNiche(nicho, scroll) {
     catalogState.nicho = nicho;
     updateTabState();
     renderCatalog(true);
-  } else if (catalogView.page > 0) {
-    renderCatalog(false);
+  } else if (catalogView.index > 0) {
+    setCatalogPage(0);
   }
   if (scroll) {
     const section = $("#modelos");
@@ -192,86 +192,112 @@ export function clearFilters() {
   renderCatalog(true);
 }
 
-// 6 no desktop, 4 no tablet e 3 no mobile (mesmas colunas do CSS).
-export function catalogPerPage() {
-  if (window.matchMedia("(min-width: 1024px)").matches) return 6;
-  if (window.matchMedia("(min-width: 700px)").matches) return 4;
-  return 3;
+// Carrossel: 1 card por vez no mobile, 2 no tablet e 3 no desktop.
+export function catalogPerView() {
+  if (window.matchMedia("(min-width: 1024px)").matches) return 3;
+  if (window.matchMedia("(min-width: 700px)").matches) return 2;
+  return 1;
 }
-
-function renderCatalogPage() {
+function catalogMaxIndex() {
+  return Math.max(0, catalogResults.length - catalogView.perView);
+}
+function catalogGap() {
+  if (!catalogGrid) return 0;
+  const styles = window.getComputedStyle(catalogGrid);
+  return parseFloat(styles.columnGap || styles.gap) || 0;
+}
+function catalogStep() {
+  if (!catalogGrid) return 0;
+  const cell = catalogGrid.querySelector(".model-cell");
+  if (!cell) return 0;
+  return cell.getBoundingClientRect().width + catalogGap();
+}
+function catalogIndexFromScroll() {
+  const step = catalogStep();
+  if (!step) return 0;
+  return Math.max(0, Math.min(catalogMaxIndex(), Math.round(catalogGrid.scrollLeft / step)));
+}
+function renderCatalogCards() {
   if (!catalogGrid) return;
-  const perPage = catalogView.perPage;
-  const start = catalogView.page * perPage;
-  const pageItems = catalogResults.slice(start, start + perPage);
-  if (!pageItems.length) {
+  if (!catalogResults.length) {
     catalogGrid.replaceChildren(buildEmpty());
-  } else {
-    const cells = pageItems.map((entry, offset) => buildModelCell(entry.site, entry.index, start + offset, catalogView.page === 0 && offset < 3));
-    catalogGrid.replaceChildren(...cells);
-    bindTilt(catalogGrid);
+    catalogGrid.classList.add("is-empty");
+    catalogGrid.classList.remove("is-single");
+    return;
   }
-  catalogGrid.dataset.page = String(catalogView.page);
-  catalogGrid.classList.toggle("is-empty", !catalogResults.length);
-  catalogGrid.classList.toggle("is-single", catalogView.pages <= 1);
+  catalogGrid.classList.remove("is-empty");
+  const cells = catalogResults.map((entry, offset) => buildModelCell(entry.site, entry.index, offset, offset < catalogView.perView));
+  catalogGrid.replaceChildren(...cells);
+  catalogGrid.classList.toggle("is-single", catalogResults.length <= catalogView.perView);
+  catalogGrid.setAttribute("aria-label", catalogResults.length + " modelos do catálogo. Deslize ou use as setas para navegar.");
 }
 export function renderCatalogProgress() {
   if (!catalogProgress) return;
   catalogProgress.replaceChildren();
-  catalogProgress.setAttribute("role", "group");
-  catalogProgress.setAttribute("aria-label", "Paginação do catálogo");
-  const pages = catalogView.pages;
-  if (pages <= 1) return;
-  for (let i = 0; i < pages; i++) {
-    const dot = make("button", "catalog-dot");
-    dot.type = "button";
-    dot.dataset.page = String(i);
-    dot.setAttribute("aria-label", "Página " + (i + 1));
-    dot.setAttribute("aria-controls", "catalogGrid");
-    dot.addEventListener("click", () => setCatalogPage(i));
-    catalogProgress.append(dot);
-  }
+  const bar = make("div", "catalog-bar");
+  bar.setAttribute("aria-hidden", "true");
+  bar.append(make("span"));
+  catalogProgress.append(bar);
   syncCatalogProgressState();
 }
 export function syncCatalogProgressState() {
-  if (!catalogProgress) return;
-  Array.prototype.forEach.call(catalogProgress.children, (dot, index) => {
-    if (index === catalogView.page) dot.setAttribute("aria-current", "page");
-    else dot.removeAttribute("aria-current");
-  });
+  if (!catalogProgress || !catalogGrid) return;
+  const bar = catalogProgress.querySelector(".catalog-bar span");
+  if (!bar) return;
+  const max = catalogGrid.scrollWidth - catalogGrid.clientWidth;
+  const progress = max > 0 ? Math.min(1, Math.max(0, catalogGrid.scrollLeft / max)) : 0;
+  bar.style.setProperty("--p", progress.toFixed(4));
 }
 export function syncCatalogNav() {
-  const pages = catalogView.pages;
+  const total = catalogResults.length;
+  const perView = catalogView.perView;
+  const max = catalogMaxIndex();
+  const index = Math.max(0, Math.min(max, catalogView.index));
   if (catalogPageLabel) {
-    catalogPageLabel.replaceChildren(document.createTextNode("Página "));
-    const current = document.createElement("b");
-    current.textContent = String(catalogView.page + 1);
-    catalogPageLabel.append(current, document.createTextNode(" de " + pages));
+    catalogPageLabel.replaceChildren();
+    if (!total) {
+      catalogPageLabel.textContent = "Nenhum modelo";
+    } else {
+      const first = index + 1;
+      const last = Math.min(total, index + perView);
+      catalogPageLabel.append(document.createTextNode(perView === 1 || first === last ? "Modelo " : "Modelos "));
+      const current = document.createElement("b");
+      current.textContent = first === last ? String(first) : first + "–" + last;
+      catalogPageLabel.append(current, document.createTextNode(" de " + total));
+    }
   }
-  if (catalogNav) catalogNav.hidden = pages <= 1;
-  if (catalogPrev) catalogPrev.disabled = catalogView.page <= 0;
-  if (catalogNext) catalogNext.disabled = catalogView.page >= pages - 1;
+  if (catalogNav) catalogNav.hidden = total <= perView;
+  if (catalogPrev) catalogPrev.disabled = index <= 0;
+  if (catalogNext) catalogNext.disabled = index >= max;
   syncCatalogProgressState();
 }
-export function setCatalogPage(index) {
-  const max = Math.max(0, catalogView.pages - 1);
+export function setCatalogPage(index, smooth = true) {
+  const max = catalogMaxIndex();
   const next = Math.max(0, Math.min(max, Number(index) || 0));
-  const changed = next !== catalogView.page;
+  const changed = next !== catalogView.index;
+  catalogView.index = next;
   catalogView.page = next;
-  if (changed) renderCatalogPage();
+  if (catalogGrid) {
+    const left = next * catalogStep();
+    if (smooth && !reduced()) catalogGrid.scrollTo({ left, behavior: "smooth" });
+    else catalogGrid.scrollLeft = left;
+  }
   syncCatalogNav();
   return changed;
 }
 export function renderCatalog(animate, options = {}) {
   if (!catalogGrid) return;
-  const previousPage = catalogView.page;
-  const anchorNode = options.preserve ? catalogGrid.querySelector("[data-index]") : null;
-  const anchor = anchorNode ? Number(anchorNode.getAttribute("data-index")) : null;
+  const previousIndex = options.preserve ? catalogView.index : 0;
 
   catalogResults = [];
   SITES.forEach((site, index) => { if (matchesCatalog(site)) catalogResults.push({ site, index }); });
-  const perPage = catalogPerPage();
-  const totalPages = Math.max(1, Math.ceil(catalogResults.length / perPage));
+  const perView = catalogPerView();
+  catalogView.perView = perView;
+  catalogView.perPage = perView;
+  catalogView.total = catalogResults.length;
+  catalogView.pages = catalogResults.length;
+  catalogView.index = Math.max(0, Math.min(catalogMaxIndex(), previousIndex));
+  catalogView.page = catalogView.index;
 
   const count = $("#catalogCount");
   if (count) {
@@ -280,22 +306,16 @@ export function renderCatalog(animate, options = {}) {
     else count.textContent = catalogResults.length + (catalogResults.length === 1 ? " modelo em " + catalogState.nicho : " modelos em " + catalogState.nicho);
   }
 
-  // Filtro/busca voltam à primeira página; resize preserva o modelo âncora (aproximado).
-  let target = 0;
-  if (options.preserve) {
-    const found = anchor === null ? -1 : catalogResults.findIndex((entry) => entry.index === anchor);
-    target = found >= 0 ? Math.floor(found / perPage) : previousPage;
-  }
-  target = Math.max(0, Math.min(totalPages - 1, target));
-
-  catalogView.perPage = perPage;
-  catalogView.pages = totalPages;
-  catalogView.page = target;
   if (catalogCustom) catalogCustom.replaceChildren(buildCustomCard());
   if (animate) trackEvent("catalog_filter", { nicho: catalogState.nicho, query: catalogState.query, resultados: catalogResults.length });
   renderCatalogProgress();
+  renderCatalogCards();
   syncCatalogNav();
-  renderCatalogPage();
+  if (catalogGrid) {
+    const left = catalogView.index * catalogStep();
+    catalogGrid.scrollLeft = left;
+    window.requestAnimationFrame(syncCatalogProgressState);
+  }
   observeReveals();
   if (animate && !reduced() && !lite()) {
     catalogGrid.animate(
@@ -336,14 +356,45 @@ export function initCatalogControls() {
       if (input) input.focus();
     });
   }
-  if (catalogPrev) catalogPrev.addEventListener("click", () => setCatalogPage(catalogView.page - 1));
-  if (catalogNext) catalogNext.addEventListener("click", () => setCatalogPage(catalogView.page + 1));
+  if (catalogPrev) catalogPrev.addEventListener("click", () => setCatalogPage(catalogView.index - 1));
+  if (catalogNext) catalogNext.addEventListener("click", () => setCatalogPage(catalogView.index + 1));
+  if (catalogGrid) {
+    let ticking = false;
+    catalogGrid.addEventListener("scroll", () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        ticking = false;
+        const index = catalogIndexFromScroll();
+        if (index !== catalogView.index) {
+          catalogView.index = index;
+          catalogView.page = index;
+          syncCatalogNav();
+        } else {
+          syncCatalogProgressState();
+        }
+      });
+    }, { passive: true });
+    catalogGrid.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") { event.preventDefault(); setCatalogPage(catalogView.index - 1); }
+      else if (event.key === "ArrowRight") { event.preventDefault(); setCatalogPage(catalogView.index + 1); }
+      else if (event.key === "Home") { event.preventDefault(); setCatalogPage(0); }
+      else if (event.key === "End") { event.preventDefault(); setCatalogPage(catalogMaxIndex()); }
+    });
+  }
   let resizeTimer = 0;
   window.addEventListener("resize", () => {
     window.clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(() => {
-      if (catalogPerPage() === catalogView.perPage) return;
-      renderCatalog(false, { preserve: true });
+      const perView = catalogPerView();
+      if (perView === catalogView.perView) return;
+      const anchor = catalogView.index;
+      catalogView.perView = perView;
+      catalogView.perPage = perView;
+      catalogView.index = Math.max(0, Math.min(catalogMaxIndex(), anchor));
+      catalogView.page = catalogView.index;
+      syncCatalogNav();
+      setCatalogPage(catalogView.index, false);
     }, 150);
   }, { passive: true });
 }
