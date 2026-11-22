@@ -13,7 +13,12 @@ const distDir = path.join(root, "dist");
 
 const args = process.argv.slice(2);
 const baseArg = args.find((a) => a.startsWith("--base="));
+const cdnArg = args.find((a) => a.startsWith("--cdn="));
 const baseUrl = baseArg ? baseArg.slice("--base=".length) : "";
+const cdn = cdnArg ? cdnArg.slice("--cdn=".length).replace(/\/+$/, "") : "";
+const dataBase = baseUrl || (cdn ? `${cdn}/assets/` : "");
+const cssHref = cdn ? `${cdn}/dist/main.min.css` : "main.min.css";
+const jsSrc = cdn ? `${cdn}/dist/main.min.js` : "main.min.js";
 
 const BUDGET_EMBED = 80 * 1024;
 const BUDGET_CSS_GZ = 40 * 1024;
@@ -70,14 +75,14 @@ html = html
   .replace(/<link rel="preload"[^>]*>\s*/gi, "")
   .replace(/<script type="application\/ld\+json"[\s\S]*?<\/script>\s*/i, "");
 
-const htmlTag = baseUrl
-  ? `<html lang="pt-BR" class="js" data-base="${baseUrl}">`
+const htmlTag = dataBase
+  ? `<html lang="pt-BR" class="js" data-base="${dataBase}">`
   : `<html lang="pt-BR" class="js">`;
 html = html.replace(/<html lang="pt-BR"[^>]*>/, htmlTag);
 html = html.replace(/<body>/, `<body data-embed-mode="single">`);
 
-const cssTag = `<link rel="stylesheet" href="main.min.css" integrity="${integrity["main.min.css"]}" crossorigin="anonymous">`;
-const jsTag = `<script src="main.min.js" integrity="${integrity["main.min.js"]}" crossorigin="anonymous" defer></script>`;
+const cssTag = `<link rel="stylesheet" href="${cssHref}" integrity="${integrity["main.min.css"]}" crossorigin="anonymous">`;
+const jsTag = `<script src="${jsSrc}" integrity="${integrity["main.min.js"]}" crossorigin="anonymous" defer></script>`;
 
 if (!html.includes('<link rel="stylesheet" href="css/main.css">')) throw new Error("link de CSS nao encontrado");
 if (!html.includes('<script type="module" src="js/main.js"></script>')) throw new Error("script de entrada nao encontrado");
@@ -109,7 +114,8 @@ if (embedSize > BUDGET_EMBED) failures.push(`embed.html ${kb(embedSize)} > ${kb(
 if (cssGz > BUDGET_CSS_GZ) failures.push(`main.min.css gzip ${kb(cssGz)} > ${kb(BUDGET_CSS_GZ)}`);
 if (jsGz > BUDGET_JS_GZ) failures.push(`main.min.js gzip ${kb(jsGz)} > ${kb(BUDGET_JS_GZ)}`);
 
-console.log("base:", baseUrl || "(local: ../prints)");
+console.log("base:", dataBase || "(local: ../prints)");
+console.log("assets:", cdn ? cssHref + " | " + jsSrc : "(relativos, preview local)");
 console.log(`embed.html      ${kb(embedSize).padStart(9)}`);
 console.log(`main.min.css    ${kb(cssSize).padStart(9)}  gzip ${kb(cssGz)}`);
 console.log(`main.min.js     ${kb(jsSize).padStart(9)}  gzip ${kb(jsGz)}`);

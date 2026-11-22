@@ -1,13 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-
-const require = createRequire(import.meta.url);
-const { chromium } = require("C:/Users/Mateus/AppData/Local/Temp/kilo/mlcs-shots/node_modules/playwright-core");
+import { chromium } from "playwright-core";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const html = fs.readFileSync(path.join(root, "src", "js", "data.js"), "utf8");
 const outDir = path.join(root, "prints");
 fs.mkdirSync(outDir, { recursive: true });
 
