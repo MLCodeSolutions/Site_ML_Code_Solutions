@@ -1,0 +1,73 @@
+/* ============================================================
+   ML CODE SOLUTIONS · 04 · header/nav
+   Extraido de index.html (fase 1)
+   ============================================================ */
+/* ============================================================
+   04 · HEADER / NAV
+   ============================================================ */
+.site-header{
+  position:sticky; top:0; z-index:90;
+  height:var(--header-h); display:flex; align-items:center;
+  background:color-mix(in oklab, var(--bg-0) 92%, transparent);
+  border-bottom:1px solid transparent;
+  transition:height var(--d-base) var(--ease-out), background var(--d-base), border-color var(--d-base);
+}
+.site-header.is-scrolled{
+  height:66px;
+  background:color-mix(in oklab, var(--bg-0) 96%, transparent);
+  border-bottom-color:var(--line-soft);
+  box-shadow:0 18px 40px -30px rgba(0,0,0,.9);
+}
+.header-inner{display:flex; align-items:center; justify-content:space-between; gap:clamp(1rem,3vw,2.6rem)}
+.brand{display:inline-flex; align-items:center; text-decoration:none; flex:0 0 auto}
+.brand-svg{width:176px; height:auto; filter:drop-shadow(0 0 14px color-mix(in oklab, var(--neon-1) 22%, transparent)); transition:transform var(--d-base) var(--ease-spring), filter var(--d-base)}
+.brand:hover .brand-svg{transform:translateY(-1px) scale(1.015); filter:drop-shadow(0 0 22px color-mix(in oklab, var(--neon-1) 45%, transparent))}
+.main-nav{display:flex; align-items:center; gap:clamp(.7rem,2vw,1.7rem)}
+.nav-link{
+  position:relative; padding:.45rem 0; text-decoration:none; color:var(--muted);
+  font-size:.82rem; font-weight:600; letter-spacing:.02em;
+  transition:color var(--d-base);
+}
+.nav-link::after{
+  content:""; position:absolute; left:0; right:0; bottom:.05rem; height:1px;
+  background:var(--grad); transform:scaleX(0); transform-origin:left;
+  transition:transform var(--d-base) var(--ease-out); box-shadow:var(--glow-sm);
+}
+.nav-link:hover,.nav-link[aria-current="true"]{color:var(--ink)}
+.nav-link:hover::after,.nav-link[aria-current="true"]::after{transform:scaleX(1)}
+.header-cta{--btn-h:40px; font-size:.78rem; padding:.55rem 1rem}
+.nav-toggle{
+  display:none; width:46px; height:46px; border:1px solid var(--line-soft); border-radius:50%;
+  background:color-mix(in oklab, var(--bg-2) 70%, transparent); position:relative;
+}
+.nav-toggle span{
+  position:absolute; left:50%; width:19px; height:1.5px; background:var(--ink);
+  transform:translateX(-50%); transition:transform var(--d-base) var(--ease-out), opacity var(--d-fast), top var(--d-base);
+}
+.nav-toggle span:nth-child(1){top:17px}
+.nav-toggle span:nth-child(2){top:22px}
+.nav-toggle span:nth-child(3){top:27px}
+.nav-open .nav-toggle span:nth-child(1){top:22px; transform:translateX(-50%) rotate(45deg)}
+.nav-open .nav-toggle span:nth-child(2){opacity:0}
+.nav-open .nav-toggle span:nth-child(3){top:22px; transform:translateX(-50%) rotate(-45deg)}
+@media (max-width:940px){
+  .nav-toggle{display:block}
+  .main-nav{
+    position:absolute; top:100%; left:3vw; right:3vw;
+    display:flex; flex-direction:column; align-items:stretch; gap:.2rem;
+    padding:1rem; border-radius:var(--radius);
+    background:linear-gradient(180deg,#160a26,#0a0414); border:1px solid var(--line);
+    box-shadow:0 30px 80px -30px #000;
+    max-height:calc(100svh - var(--header-h) - 1rem); overflow:auto;
+    visibility:hidden; opacity:0; transform:translateY(-10px); pointer-events:none;
+    transition:opacity var(--d-base) var(--ease-out), transform var(--d-base) var(--ease-out), visibility var(--d-base);
+  }
+  .nav-open .main-nav{visibility:visible; opacity:1; transform:none; pointer-events:auto}
+  .nav-link{padding:.85rem .6rem; font-size:.95rem; border-bottom:1px solid var(--line-soft)}
+  .nav-link::after{display:none}
+  .header-cta{margin-top:.6rem; width:100%; --btn-h:48px}
+}
+@media (max-width:420px){
+  .brand-svg{width:148px}
+  .site-header{--header-h:70px}
+}

@@ -1,0 +1,56 @@
+/* ============================================================
+   ML CODE SOLUTIONS · 24 · modo leve
+   Extraido de index.html (fase 1)
+   ============================================================ */
+/* ===== 24 · MODO LEVE (CELULAR / ECONOMIA DE DADOS) =====
+   Mantém a identidade visual, mas remove repaint contínuo, blur animado
+   e animações de fundo que pesam em aparelhos intermediários. */
+html.lite .film-grain,
+html.lite .vignette,
+html.lite .float-chip{display:none!important}
+html.lite .hero-fog,
+html.lite .hero-glow,
+html.lite .cta-orb,
+html.lite .morph-blob,
+html.lite .catalog-glow{animation:none!important; filter:none!important; opacity:.3!important}
+html.lite .grad,
+html.lite .h2 em,
+html.lite .hero-title em,
+html.lite .btn-primary,
+html.lite .btn-ring::before,
+html.lite .art-float,
+html.lite .art-float--slow,
+html.lite .art-spark,
+html.lite .art-caret,
+html.lite .art-scan,
+html.lite .art-orbit,
+html.lite .art-ui,
+html.lite .art-chip,
+html.lite .float-chip,
+html.lite .scroll-cue i::after,
+html.lite .wa-fab,
+html.lite .cta-grid,
+html.lite .plan--featured::before,
+html.lite .model-niche-badge svg{animation:none!important}
+html.lite .marquee-track{animation:none!important; transform:none!important; flex-wrap:wrap; width:auto; justify-content:center}
+html.lite .marquee-group{flex-wrap:wrap; justify-content:center; gap:.35rem 0}
+html.lite .marquee-group:last-child{display:none}
+html.lite .site-header,
+html.lite .model-preview,
+html.lite .model-niche-badge,
+html.lite .modal-head,
+html.lite .modal-foot,
+html.lite .tab,
+html.lite .catalog-search,
+html.lite .toast{backdrop-filter:none!important; -webkit-backdrop-filter:none!important}
+html.lite .site-header{background:rgba(7,3,15,.96)!important}
+html.lite .model-preview,
+html.lite .model-niche-badge{background:rgba(8,3,16,.92)!important}
+html.lite .supports-view .view-fade{animation:none!important}
+html.lite .reveal{transition-duration:.38s; transition-delay:0ms}
+html.lite .model-card{transform:none!important; transition:none}
+html.lite .model-card::after{display:none}
+html.lite .hero-parallax{transform:none!important; will-change:auto}
+html.lite .section-divider{display:none}
+html.lite .cover-frame{filter:none}
+html.lite .model-cover .model-shot{transition:opacity .2s linear}

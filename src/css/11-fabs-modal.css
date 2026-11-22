@@ -1,0 +1,116 @@
+/* ============================================================
+   ML CODE SOLUTIONS · 17-18 · fabs e modal
+   Extraido de index.html (fase 1)
+   ============================================================ */
+/* ============================================================
+   17 · FABs
+   ============================================================ */
+.wa-fab{
+  position:fixed; right:1.15rem; bottom:calc(1.15rem + env(safe-area-inset-bottom)); z-index:95;
+  width:56px; height:56px; border-radius:50%; display:grid; place-items:center;
+  color:#fff; background:linear-gradient(140deg, var(--neon-2), var(--neon-1)); text-decoration:none;
+  border:1px solid color-mix(in oklab, var(--neon-3) 55%, transparent);
+  box-shadow:0 14px 34px -14px #000, 0 0 26px -6px var(--neon-1);
+  animation:pulseGlow 3.2s ease-out infinite;
+  transition:transform var(--d-base) var(--ease-spring), box-shadow var(--d-base);
+}
+.wa-fab:hover{transform:translateY(-3px) scale(1.04); box-shadow:0 18px 44px -16px #000, 0 0 36px -4px var(--neon-1)}
+.wa-fab svg{width:27px; height:27px}
+.wa-fab::after{
+  content:"Falar no WhatsApp"; position:absolute; right:calc(100% + .6rem); top:50%; transform:translateY(-50%) translateX(6px);
+  padding:.4rem .6rem; border-radius:8px; background:var(--bg-2); border:1px solid var(--line);
+  color:var(--ink); font-size:.68rem; white-space:nowrap; opacity:0; pointer-events:none;
+  transition:opacity var(--d-base), transform var(--d-base);
+}
+.wa-fab:hover::after{opacity:1; transform:translateY(-50%) translateX(0)}
+.to-top{
+  position:fixed; right:1.3rem; bottom:calc(5.35rem + env(safe-area-inset-bottom)); z-index:94;
+  width:46px; height:46px; border-radius:50%; display:grid; place-items:center;
+  background:color-mix(in oklab, var(--bg-2) 88%, transparent); border:1px solid var(--line);
+  color:var(--ink); opacity:0; visibility:hidden; transform:translateY(10px);
+  transition:opacity var(--d-base), visibility var(--d-base), transform var(--d-base), border-color var(--d-base);
+  backdrop-filter:blur(8px);
+}
+.to-top.is-visible{opacity:1; visibility:visible; transform:none}
+.to-top:hover{border-color:var(--neon-1)}
+.to-top .ring{position:absolute; inset:2px; width:calc(100% - 4px); height:calc(100% - 4px); transform:rotate(-90deg); overflow:visible}
+.to-top .ring circle{fill:none; stroke-width:2}
+.to-top .ring .track{stroke:color-mix(in oklab, var(--ink) 12%, transparent)}
+.to-top .ring .bar{stroke:var(--neon-1); stroke-linecap:round; stroke-dasharray:125.6; stroke-dashoffset:125.6; filter:drop-shadow(0 0 4px var(--neon-1))}
+.to-top svg.arrow{width:15px; height:15px; position:relative; z-index:1}
+@media (max-width:420px){
+  .wa-fab{width:52px; height:52px; right:.85rem; bottom:calc(.85rem + env(safe-area-inset-bottom))}
+  .to-top{width:42px; height:42px; right:.95rem; bottom:calc(4.7rem + env(safe-area-inset-bottom))}
+}
+.mobile-cta{
+  position:fixed; left:0; right:0; bottom:0; z-index:96;
+  display:flex; align-items:center; gap:.55rem;
+  padding:.55rem .7rem calc(.55rem + env(safe-area-inset-bottom));
+  background:rgba(7,3,15,.97); border-top:1px solid color-mix(in oklab, var(--neon-1) 30%, var(--line-soft));
+  box-shadow:0 -18px 40px -30px #000;
+}
+.mobile-cta[hidden]{display:none}
+.mobile-cta-info{display:grid; gap:.05rem; min-width:0; flex:1 1 auto}
+.mobile-cta-info small{font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.mobile-cta-info b{font-family:var(--font-display); font-size:1.05rem; line-height:1.1; color:var(--neon-3)}
+.mobile-cta-info span{font-size:.64rem; color:var(--muted)}
+.mobile-cta .btn{--btn-h:44px; padding:.55rem .8rem; font-size:.78rem; gap:.35rem; flex:0 1 auto}
+.mobile-cta-close{width:34px; height:34px; border-radius:50%; display:grid; place-items:center; flex:0 0 auto; background:transparent; border:1px solid var(--line); color:var(--muted)}
+.mobile-cta-close svg{width:14px; height:14px}
+body.mobile-cta-open .wa-fab,
+body.mobile-cta-open .to-top{opacity:0; visibility:hidden; pointer-events:none}
+@media (min-width:761px){.mobile-cta{display:none!important}}
+@media (max-width:380px){.mobile-cta-info span{display:none}.mobile-cta .btn{font-size:.72rem; padding:.5rem .6rem}}
+.cookie-banner{
+  position:fixed; left:1rem; right:1rem; bottom:calc(1rem + env(safe-area-inset-bottom)); z-index:110;
+  display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  max-width:760px; margin:0 auto; padding:1rem 1.1rem; border-radius:var(--radius);
+  background:rgba(8,3,16,.98); border:1px solid color-mix(in oklab,var(--neon-1) 32%,var(--line-soft));
+  box-shadow:0 24px 60px -30px #000;
+}
+.cookie-banner[hidden]{display:none}
+.cookie-banner p{color:var(--muted);font-size:.78rem;line-height:1.55;max-width:48ch}
+.cookie-actions{display:flex;gap:.5rem;flex:0 0 auto}
+.cookie-actions button{
+  padding:.5rem .8rem; border-radius:999px; font-size:.74rem; font-weight:700;
+  border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+}
+.cookie-actions button[data-consent="granted"]{background:var(--grad);border-color:transparent;color:#fff}
+@media (max-width:560px){.cookie-banner{left:.7rem;right:.7rem;bottom:calc(.7rem + env(safe-area-inset-bottom))}}
+
+/* ============================================================
+   18 · MODAL DE PRÉVIA
+   ============================================================ */
+.modal{position:fixed; inset:0; z-index:1200; display:none; align-items:center; justify-content:center; padding:clamp(.6rem,2vw,1.4rem)}
+.modal[aria-hidden="false"]{display:flex}
+.modal-backdrop{position:absolute; inset:0; background:rgba(3,1,8,.84); backdrop-filter:blur(9px)}
+.modal-panel{
+  position:relative; width:min(1120px,96vw); max-height:92svh; display:flex; flex-direction:column;
+  border-radius:var(--radius-lg); overflow:hidden;
+  background:var(--bg-1); border:1px solid var(--line);
+  box-shadow:0 50px 140px -40px #000, 0 0 90px -40px var(--neon-2);
+  animation:modalIn .35s var(--ease-out);
+}
+.modal-head{display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.85rem 1rem; border-bottom:1px solid var(--line-soft); background:color-mix(in oklab, var(--bg-2) 72%, transparent)}
+.modal-head h2{font-family:var(--font-display); font-size:1rem; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.modal-head p{font-size:.64rem; color:var(--muted); margin-top:.15rem}
+.modal-close{width:38px; height:38px; flex:0 0 auto; border-radius:50%; border:1px solid var(--line-soft); background:transparent; color:var(--ink); display:grid; place-items:center}
+.modal-close:hover{border-color:var(--neon-1); background:color-mix(in oklab, var(--neon-1) 12%, transparent)}
+.modal-close svg{width:16px; height:16px}
+.modal-body{position:relative; flex:1 1 auto; min-height:min(62svh,560px); background:#05020a}
+.modal-fallback{position:absolute; inset:0; z-index:3; display:none; place-items:center; text-align:center; padding:2rem; background:linear-gradient(150deg,var(--bg-2),#05020a)}
+.modal-fallback.is-visible{display:grid}
+.modal-fallback svg{width:48px; height:48px; color:var(--neon-3); margin:0 auto .9rem; opacity:.85}
+.modal-fallback h3{font-family:var(--font-display); font-size:1.1rem; margin-bottom:.4rem}
+.modal-fallback p{color:var(--muted); font-size:.82rem; max-width:42ch; margin:0 auto 1.1rem}
+.modal-foot{display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.7rem .95rem; border-top:1px solid var(--line-soft); background:color-mix(in oklab, var(--bg-2) 55%, transparent); font-size:.66rem; color:var(--muted)}
+.modal-foot .domain{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.modal-foot .btn{--btn-h:36px; font-size:.7rem; padding:.4rem .8rem}
+body.modal-open{overflow:hidden}
+@keyframes modalIn{from{opacity:0; transform:translateY(14px) scale(.985)}to{opacity:1; transform:none}}
+@media (max-width:560px){
+  .modal{padding:.4rem}
+  .modal-panel{max-height:94svh}
+  .modal-body{min-height:58svh}
+  .modal-foot{font-size:.6rem}
+}

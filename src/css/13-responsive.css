@@ -1,0 +1,30 @@
+/* ============================================================
+   ML CODE SOLUTIONS · 20 · responsivo
+   Extraido de index.html (fase 1)
+   ============================================================ */
+/* ============================================================
+   20 · RESPONSIVO GERAL
+   ============================================================ */
+@media (max-width:1100px){
+  .header-inner{gap:1rem}
+  .nav-link{font-size:.76rem}
+}
+@media (max-width:900px){
+  .section{padding:4rem 0}
+}
+@media (max-width:760px){
+  .section{padding:3.5rem 0}
+  .section-head{margin-bottom:2rem}
+}
+@media (max-width:560px){
+  :root{--container:min(1180px, 91vw)}
+  .btn-lg{--btn-h:54px; padding:.9rem 1.2rem; font-size:.9rem}
+  .cta-actions{flex-direction:column; width:100%}
+  .cta-actions .btn{width:100%}
+  .footer-bottom{justify-content:center; text-align:center}
+}
+@media (hover:none){
+  .service-card:hover,.model-card:hover{--lift:0}
+  .service-card:hover{box-shadow:var(--shadow-card)}
+  .wa-fab::after{display:none}
+}

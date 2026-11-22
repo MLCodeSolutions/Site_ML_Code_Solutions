@@ -1,0 +1,17 @@
+/* ============================================================
+   ML CODE SOLUTIONS · 19 · reveals
+   Extraido de index.html (fase 1)
+   ============================================================ */
+/* ============================================================
+   19 · REVEALS / SCROLL
+   ============================================================ */
+.reveal-on .reveal{opacity:0; transform:translateY(26px); transition:opacity .75s var(--ease-out), transform .75s var(--ease-out); transition-delay:calc(var(--i,0) * 55ms)}
+.reveal-on .reveal.in{opacity:1; transform:none}
+.service-cell,.model-cell{min-width:0}
+.service-cell{height:100%}
+.service-cell .service-card{height:100%}
+.supports-view .view-fade{animation:viewFade linear both; animation-timeline:view(); animation-range:entry 8% cover 32%}
+@keyframes viewFade{from{opacity:.2; transform:translateY(18px)}to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .reveal-on .reveal{opacity:1!important; transform:none!important}
+}
